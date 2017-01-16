@@ -8,7 +8,7 @@ entry_points section in setup.cfg:
     console_scripts =
      fibonacci = pypixplore.skeleton:run
 
-Then run `python setup.py install` which will install the command `fibonacci`
+Then run `python setup.py install` which will install the command `ppxplore`
 inside your current environment.
 Besides console scripts, the header (i.e. until _logger...) of this file can
 also be used as template for Python modules.
@@ -25,7 +25,7 @@ from pypixplore import __version__
 
 __author__ = "Flavio C. Coelho"
 __copyright__ = "Flavio C. Coelho"
-__license__ = "none"
+__license__ = 'GPL v3'
 
 _logger = logging.getLogger(__name__)
 
@@ -56,16 +56,16 @@ def parse_args(args):
       :obj:`argparse.Namespace`: command line parameters namespace
     """
     parser = argparse.ArgumentParser(
-        description="Just a Fibonnaci demonstration")
+        description="Explore Python Package Index")
     parser.add_argument(
         '--version',
         action='version',
         version='pypixplore {ver}'.format(ver=__version__))
     parser.add_argument(
-        dest="n",
-        help="n-th Fibonacci number",
-        type=int,
-        metavar="INT")
+        dest="name",
+        help="package name",
+        type=str,
+        )
     parser.add_argument(
         '-v',
         '--verbose',
