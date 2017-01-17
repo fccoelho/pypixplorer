@@ -4,7 +4,7 @@ pypixplore
 
 
 This tool provides interesting ways to explore python packages, both local and remote. This package is being built as a
- Python teaching exercise. This does not diminish our expectations for a full featured  tool. Please use and report any bugs
+Python teaching exercise. This does not diminish our expectations for a full featured  tool. Please use and report any bugs
  or missing features.
 
 
