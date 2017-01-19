@@ -37,6 +37,11 @@ This is the documentation of **pypixplore**.
     <http://www.sphinx-doc.org/en/stable/domains.html#info-field-lists>`__
     style.
 
+Overview
+========
+
+PyPIExplorer is a library developed to facilitate the exploration of the `Python Package Index <http://pypi.python.org>`__.
+Embedding data science and visualization techniques, this library helps you to better explore the scope of this large Python software repository.
 
 Contents
 ========
