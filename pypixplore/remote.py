@@ -11,6 +11,11 @@ class Index:
         self.client = xmlrpcclient.ServerProxy(server)
 
     def _get_JSON(self, package_name):
+        """
+        Gets JSON record for a given package
+        :param package_name: name of the package
+        :return: dictionary
+        """
         url = 'http://pypi.python.org/pypi/{}/json'.format(package_name)
         ans = requests.get(url)
         return ans.json()
@@ -25,4 +30,7 @@ class Index:
         pass
 
     def get_popularity(self, package_name):
+        pass
+
+    def release_series(self, package_name):
         pass

@@ -1,4 +1,4 @@
-from pypixplore.local import *
+from pypixplore.local import InstalledPackages
 import pytest
 
 

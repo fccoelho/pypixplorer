@@ -1,4 +1,4 @@
-from pypixplore.remote import *
+from pypixplore.remote import Index
 import pytest
 
 class Tests:
