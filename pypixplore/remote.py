@@ -34,3 +34,6 @@ class Index:
 
     def release_series(self, package_name):
         pass
+
+    def get_by_subject(self, subject):
+        pass
