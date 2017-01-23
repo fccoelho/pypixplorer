@@ -1,6 +1,7 @@
 from pypixplore.remote import Index
 import pytest
 
+
 class Tests:
     @pytest.fixture(autouse=True)
     def index(self):
