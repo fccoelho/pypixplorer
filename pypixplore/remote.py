@@ -7,7 +7,7 @@ class Index:
     Connects with remote server. PyPI by default.
     """
 
-    def __init__(self, server='https://pypi.python.org/pypi', cache_path='/tmp/pypiexplorer_cache.json'):
+    def __init__(self, server='https://pypi.python.org/pypi', cache_path='pypiexplorer_cache.json'):
         self.client = xmlrpcclient.ServerProxy(server)
         self.cache = TinyDB(cache_path)
 
