@@ -43,7 +43,12 @@ class Index:
         raise NotImplementedError
 
     def get_popularity(self, package_name):
-        raise NotImplementedError
+        """
+        :param package_name: name of the package
+        :return: dictionary of number of downloads. keys are 'last_month', 'last_week' and 'last_day'
+        """
+
+        return self._get_JSON("numpy")["info"]["downloads"]
 
     def release_series(self, package_name):
         raise NotImplementedError
