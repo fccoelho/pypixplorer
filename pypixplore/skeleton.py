@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
 This is a skeleton file that can serve as a starting point for a Python
@@ -22,6 +22,7 @@ import sys
 import logging
 
 from pypixplore import __version__
+from pypixplore.local import InstalledPackages
 
 __author__ = "Flavio C. Coelho"
 __copyright__ = "Flavio C. Coelho"
@@ -30,20 +31,9 @@ __license__ = 'GPL v3'
 _logger = logging.getLogger(__name__)
 
 
-def fib(n):
-    """Fibonacci example function
-
-    Args:
-      n (int): integer
-
-    Returns:
-      int: n-th Fibonacci number
-    """
-    assert n > 0
-    a, b = 1, 1
-    for i in range(n-1):
-        a, b = b, a+b
-    return a
+def get_status(pname):
+    ip = InstalledPackages()
+    return ip.show(pname)
 
 
 def parse_args(args):
@@ -62,6 +52,8 @@ def parse_args(args):
         action='version',
         version='pypixplore {ver}'.format(ver=__version__))
     parser.add_argument(
+        '-s',
+        '--status',
         dest="name",
         help="Show Status for a given package.",
         type=str,
@@ -103,7 +95,7 @@ def main(args):
     args = parse_args(args)
     setup_logging(args.loglevel)
     _logger.debug("Starting Analysis...")
-    print("The {}-th Fibonacci number is {}".format(args.n, fib(args.n)))
+    print(get_status(args.name))
     _logger.info("Done")
 
 
