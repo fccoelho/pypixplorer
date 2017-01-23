@@ -40,7 +40,7 @@ This is the documentation of **pypixplore**.
 Overview
 ========
 
-PyPIExplorer is a library developed to facilitate the exploration of the `Python Package Index <http://pypi.python.org>`__.
+PyPIExplorer is a library developed to facilitate the exploration of the `Python Package Index <http://pypi.python.org/pypi>`__.
 Embedding data science and visualization techniques, this library helps you to better explore the scope of this large Python software repository.
 
 Contents
@@ -49,6 +49,7 @@ Contents
 .. toctree::
    :maxdepth: 2
 
+         Quickstart <quickstart>
    License <license>
    Authors <authors>
    Changelog <changes>

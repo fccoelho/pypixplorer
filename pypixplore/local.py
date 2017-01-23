@@ -8,7 +8,7 @@ class InstalledPackages:
         return self.installed
 
     def show(self, name=None):
-        pass
+        raise NotImplementedError
 
     def upgradeable(self):
-        pass
+        raise NotImplementedError
