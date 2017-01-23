@@ -10,6 +10,8 @@ class Tests:
         for package in ['pandas', 'numpy', 'tinydb']:
             obj = index._get_JSON(package)
             assert isinstance(obj, dict)
+            assert 'info' in obj
+            assert 'name' in obj['info']
 
     def test_cache_update(self, index):
         assert len(index.cache.all()) > 0
