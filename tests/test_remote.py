@@ -15,3 +15,7 @@ class Tests:
 
     def test_cache_update(self, index):
         assert len(index.cache.all()) > 0
+
+    def test_rank_of_packages_by_recent_release(self):
+        aa = Index().rank_of_packages_by_recent_release()
+        assert len(aa) == 100
