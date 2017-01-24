@@ -95,6 +95,10 @@ def main(args):
     args = parse_args(args)
     setup_logging(args.loglevel)
     _logger.debug("Starting Analysis...")
+    ip = InstalledPackages()
+    if 'l' in vars(args):
+        print(ip.list_installed())
+
     print(get_status(args.name))
     _logger.info("Done")
 
