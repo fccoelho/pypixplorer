@@ -14,3 +14,4 @@ class Tests:
 
     def test_list_installed(self, localpacks):
         assert isinstance(localpacks.installed, list)
+        assert len(localpacks.installed)>0
