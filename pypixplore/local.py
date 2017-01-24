@@ -1,4 +1,5 @@
 import pip
+from pypixplore.remote import Index
 
 class InstalledPackages:
     def __init__(self):
@@ -11,4 +12,22 @@ class InstalledPackages:
         raise NotImplementedError
 
     def upgradeable(self):
-        raise NotImplementedError
+        installed_packages = self.list_installed()
+        upgradeable_list = list()
+        for package in installed_packages:
+            package = str(package).split()
+            package_name = package[0]
+            installed_version = package[1]
+            package_json = Index()
+            package_json = package_json._get_JSON(package_name)
+            latest_version = package_json['info']['version']
+            if installed_version != latest_version:
+                upgradeable_list.append(package_name)
+        if not upgradeable_list:
+            print("There are no upgradable packages")
+        else:
+            return upgradeable_list
+
+
+
+
