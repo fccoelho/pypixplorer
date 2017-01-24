@@ -6,3 +6,4 @@
 morfessor
 pip
 tinydb
+pipdeptree
