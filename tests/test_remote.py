@@ -1,6 +1,7 @@
 from pypixplore.remote import Index
 import pytest
 
+
 class Tests:
     @pytest.fixture(autouse=True)
     def index(self):
@@ -18,4 +19,6 @@ class Tests:
 
     def test_rank_of_packages_by_recent_release(self):
         aa = Index().rank_of_packages_by_recent_release()
+    def test_get_releases(self,index):
+        assert len(index.get_releases('pandas')) > 0
         assert len(aa) == 100
