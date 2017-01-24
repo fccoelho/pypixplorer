@@ -1,6 +1,8 @@
 import xmlrpc.client as xmlrpcclient
 import requests
 from tinydb import TinyDB, Query
+import datetime
+import time
 
 class Index:
     """
@@ -26,8 +28,11 @@ class Index:
         else:
             url = 'http://pypi.python.org/pypi/{}/json'.format(package_name)
             ans = requests.get(url)
-            data = ans.json()
-            self._update_cache(data)
+            try:
+                data = ans.json()
+                self._update_cache(data)
+            except ValueError:
+                data = []
         return data
 
     def _update_cache(self, data):
@@ -56,3 +61,33 @@ class Index:
         Get packages which have had at least one release in the last six months, sorted by most recently updated
         """
         raise NotImplementedError
+
+    def count_releases(self, package_name, time_days):
+        json = self._get_JSON(package_name)
+        if json == []:
+            return(0)
+        keys = json["releases"].keys()
+        count = 0
+        for key in keys:
+            if json["releases"][key] == []:
+                break
+            date = json["releases"][key][0]["upload_time"]
+            date = datetime.datetime(int(date[0:4]), int(date[5:7]), int(date[8:10]), 0, 0, 0)
+            current_time = time.strftime("%Y-%m-%d").split('-')
+            current_time = datetime.datetime(int(current_time[0]), int(current_time[1]), int(current_time[2]), 0, 0, 0)
+            difference = current_time - date
+            if difference.days < time_days:
+                count += 1
+            else:
+                break
+        return count
+
+    def rank_of_packages_by_recent_release(self, time_days = 30):
+        list_of_all_packages = self.client.list_packages()
+        results = [self.count_releases(i, time_days) for i in list_of_all_packages[0:100]]
+        dictionary = dict(zip(list_of_all_packages, results))
+        rank = sorted(dictionary, key=dictionary.get, reverse=True)
+        return(rank)
+
+
+
