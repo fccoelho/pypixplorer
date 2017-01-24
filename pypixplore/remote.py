@@ -82,9 +82,9 @@ class Index:
                 break
         return count
 
-    def rank_of_packages_by_recent_release(self, time_days = 30):
+    def rank_of_packages_by_recent_release(self, time_days = 30, size = None):
         list_of_all_packages = self.client.list_packages()
-        results = [self.count_releases(i, time_days) for i in list_of_all_packages[0:100]]
+        results = [self.count_releases(i, time_days) for i in list_of_all_packages[0:size]]
         dictionary = dict(zip(list_of_all_packages, results))
         rank = sorted(dictionary, key=dictionary.get, reverse=True)
         return(rank)

@@ -18,7 +18,10 @@ class Tests:
         assert len(index.cache.all()) > 0
 
     def test_rank_of_packages_by_recent_release(self):
-        aa = Index().rank_of_packages_by_recent_release()
+        aa = Index().rank_of_packages_by_recent_release(size = 100)
+        assert len(aa) == 100
+        aaa = Index().rank_of_packages_by_recent_release(size = 50)
+        assert len(aaa) == 50
+
     def test_get_releases(self,index):
         assert len(index.get_releases('pandas')) > 0
-        assert len(aa) == 100
