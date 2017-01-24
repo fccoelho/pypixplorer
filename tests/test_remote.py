@@ -16,3 +16,6 @@ class Tests:
 
     def test_cache_update(self, index):
         assert len(index.cache.all()) > 0
+
+    def test_get_releases(self,index):
+        assert len(index.get_releases('pandas')) > 0
