@@ -68,8 +68,8 @@ class InstalledPackages:
             max_idx, max_ver = 0, '0'
             for idx, dic in enumerate(list_version):
                 version = dic["package"]["installed_version"]
-            if lsvrs(version) > lsvrs(max_ver):
-                max_idx, max_ver = idx, version
+                if lsvrs(version) > lsvrs(max_ver):
+                    max_idx, max_ver = idx, version
             deps = list_version[max_idx]
 
         deps_dict = {}
