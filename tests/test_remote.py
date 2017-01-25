@@ -21,6 +21,11 @@ class Tests:
         aa = Index().rank_of_packages_by_recent_release(size = 100)
         assert len(aa) == 100
         aaa = Index().rank_of_packages_by_recent_release(size = 50)
+        
+    def test_package_info(self):
+        index = Index()
+        assert isinstance(index.package_info("numpy"), str)
+
         assert len(aaa) == 50
 
     def test_releases(self, index):
