@@ -32,12 +32,12 @@ class InstalledPackages:
         :param package_name: name of the package
         :return: a dictionary of dependencies and their versions
         """
-        a = subprocess.getoutput('pipdeptree -j')
-        b = json.loads(a)
+        deptree = subprocess.getoutput('pipdeptree -j')
+        pack_json = json.loads(deptree)
 
         pack_db = TinyDB("pack_db.json")
-        pack_db.purge()  # Esvazia pack_db toda vez que for chamado novamente, para não duplicar itens
-        pack_db.insert_multiple(b)
+        pack_db.purge()  # the method clears the database on every call, avoiding rewrites of packages
+        pack_db.insert_multiple(pack_json)
 
         Pack = Query()
         list_version = pack_db.search(Pack.package.package_name == str(package_name))
@@ -45,7 +45,7 @@ class InstalledPackages:
         if len(list_version) == 0:
             return "Non installed package -- {}".format(str(package_name))
         elif len(list_version) == 1:
-            return list_version[0]  # Ver formatação do output
+            return list_version[0]  # still need to improve the output
         else:
             max_idx, max_ver = 0, '0'
             for idx, dic in enumerate(list_version):
