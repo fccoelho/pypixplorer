@@ -71,7 +71,7 @@ class Index:
     def count_releases(self, package_name, time_days):
         json = self._get_JSON(package_name)
         if json == []:
-            return(0)
+            return 0
         keys = json["releases"].keys()
         count = 0
         for key in keys:
