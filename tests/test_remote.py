@@ -23,10 +23,10 @@ class Tests:
         aaa = Index().rank_of_packages_by_recent_release(size = 50)
         
     def test_package_info(self):
-        index = Index()
-        assert isinstance(index.package_info("numpy"), str)
+        ind = Index()
+        result = ind.package_info("numpy")
+        assert isinstance(result, tuple)
 
-        assert len(aaa) == 50
 
     def test_releases(self, index):
          for package_name in ['pandas', 'numpy', 'tinydb']:
