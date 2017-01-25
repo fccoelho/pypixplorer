@@ -24,6 +24,7 @@ import logging
 from pypixplore import __version__
 from pypixplore.local import InstalledPackages
 from pypixplore.remote import Index
+from pprint import pprint
 
 __author__ = "Flavio C. Coelho"
 __copyright__ = "Flavio C. Coelho"
@@ -69,6 +70,14 @@ def parse_args(args):
         dest="releases",
         help="List releases packages",
     )
+
+    parser.add_argument(
+        '-p',
+        '--popularity',
+        nargs=1,
+        dest="popularity",
+        help="Return the popularity of a package as the number of recent downloads",
+    )
     parser.add_argument(
         '-v',
         '--verbose',
@@ -99,7 +108,7 @@ def setup_logging(loglevel):
 
 
 def main(args):
-    """Main entry point allowing external calls
+    """Main entry point allowing external callreleasess
 
     Args:
       args ([str]): command line parameter list
@@ -110,9 +119,11 @@ def main(args):
     ip = InstalledPackages()
     ind = Index()
     if args.list:
-        print(ip.list_installed())
+        pprint(ip.list_installed())
     elif args.releases is not None:
-        print(ind.get_releases(package_name=args.releases[0]))
+        pprint(ind.get_releases(package_name=args.releases[0]))
+    elif args.popularity is not None:
+        pprint(ind.get_popularity(package_name=args.popularity[0]))
 
     _logger.info("Done")
 
