@@ -18,4 +18,5 @@ class Tests:
     def test_upgradeable(self, localpacks):
         if localpacks.upgradeable():
             assert isinstance(localpacks.upgradeable(), list)
-            assert isinstance(localpacks.upgradeable()[0], str)
+            assert isinstance(localpacks.upgradeable()[0], dict)
+            assert isinstance(localpacks.upgradeable()[0][2], str)
