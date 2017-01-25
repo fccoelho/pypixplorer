@@ -3,6 +3,7 @@ import subprocess
 import json
 from distutils.version import LooseVersion as lsvrs
 from tinydb import TinyDB, Query
+from pathlib import Path
 
 
 class InstalledPackages:
