@@ -98,5 +98,35 @@ class Index:
         rank = sorted(dictionary, key=dictionary.get, reverse=True)
         return(rank)
 
+        ## Get Github popularity issue-22
 
+        ##import requests
+        ##import json
+
+        def get_number_forks():
+            forks = requests.get('https://api.github.com/repos/fccoelho/pypixplorer/forks')
+            if forks.ok:
+                forks.content
+                forks = forks.text
+                forks = json.loads(forks)
+                forks = len(forks)
+            return forks
+
+        def get_number_stars():
+            stars = requests.get('https://api.github.com/repos/fccoelho/pypixplorer/stargazers')
+            if stars.ok:
+                stars.content
+                stars = stars.text
+                stars = json.loads(stars)  # json to dict
+                stars = len(stars)
+            return stars
+
+        def get_number_watchers():
+            watchers = requests.get('https://api.github.com/repos/fccoelho/pypixplorer/subscribers')
+            if watchers.ok:
+                watchers.content
+                watchers = watchers.text
+                watchers = json.loads(watchers)  # json to dict
+                watchers = len(watchers)
+            return watchers
 
