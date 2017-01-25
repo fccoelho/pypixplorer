@@ -33,7 +33,7 @@ class Index:
     def _update_cache(self, data):
         self.cache.insert(data)
 
-    def get_releases(self, package_name):
+    def get_latest_releases(self, package_name):
         return self.client.package_releases(package_name)
 
     def get_dependencies(self, package_name):

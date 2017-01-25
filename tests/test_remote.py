@@ -19,7 +19,7 @@ class Tests:
 
     def test_releases(self, index):
          for package_name in ['pandas', 'numpy', 'tinydb']:
-            assert len(index.get_releases(package_name)) > 0
+             assert len(index.get_latest_releases(package_name)) > 0
 
 
     def test_get_popularity(self, index):
