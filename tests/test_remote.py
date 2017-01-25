@@ -16,3 +16,7 @@ class Tests:
 
     def test_cache_update(self, index):
         assert len(index.cache.all()) > 0
+
+    def test_get_popularity(self,index):
+        assert index.get_popularity is dict
+        assert len(index.get_popularity)>0
