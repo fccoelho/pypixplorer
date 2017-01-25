@@ -24,14 +24,15 @@ class InstalledPackages:
             installed_version = package[1]
             package_json = Index()
             package_json = package_json._get_JSON(package_name)
-            latest_version = package_json['info']['version']
-            python_requirement = package_json['info']['requires_python']
-            if installed_version != latest_version:
-                if python_requirement == '':
-                    python_requirement = 'None'
-                upgradeable_package = {'Name': package_name, 'Release': latest_version,
-                                       'Python Requirement': python_requirement}
-                upgradeable_list.append(upgradeable_package)
+            if package_json:
+                latest_version = package_json['info']['version']
+                python_requirement = package_json['info']['requires_python']
+                if installed_version != latest_version:
+                    if python_requirement == '':
+                        python_requirement = 'None'
+                    upgradeable_package = {'Name': package_name, 'Release': latest_version,
+                                           'Python Requirement': python_requirement}
+                    upgradeable_list.append(upgradeable_package)
         if not upgradeable_list:
             print("There are no upgradable packages")
         else:
