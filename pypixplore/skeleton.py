@@ -23,6 +23,8 @@ import logging
 
 from pypixplore import __version__
 from pypixplore.local import InstalledPackages
+from pypixplore.remote import Index
+from pprint import pprint
 
 __author__ = "Flavio C. Coelho"
 __copyright__ = "Flavio C. Coelho"
@@ -30,10 +32,6 @@ __license__ = 'GPL v3'
 
 _logger = logging.getLogger(__name__)
 
-
-def get_status(pname):
-    ip = InstalledPackages()
-    return ip.show(pname)
 
 
 def parse_args(args):
@@ -50,14 +48,36 @@ def parse_args(args):
     parser.add_argument(
         '--version',
         action='version',
-        version='pypixplore {ver}'.format(ver=__version__))
+        version='pypixplore {ver}'.format(ver=__version__)
+    )
     parser.add_argument(
         '-s',
         '--status',
         dest="name",
         help="Show Status for a given package.",
         type=str,
-        )
+    )
+    parser.add_argument(
+        '-l',
+        '--list',
+        action='store_true',
+        help="List installed packages",
+    )
+    parser.add_argument(
+        '-r',
+        '--releases',
+        nargs=1,
+        dest="releases",
+        help="List package latest release",
+    )
+
+    parser.add_argument(
+        '-p',
+        '--popularity',
+        nargs=1,
+        dest="popularity",
+        help="Return the popularity of a package as the number of recent downloads",
+    )
     parser.add_argument(
         '-v',
         '--verbose',
@@ -65,6 +85,7 @@ def parse_args(args):
         help="set loglevel to INFO",
         action='store_const',
         const=logging.INFO)
+
     parser.add_argument(
         '-vv',
         '--very-verbose',
@@ -87,7 +108,7 @@ def setup_logging(loglevel):
 
 
 def main(args):
-    """Main entry point allowing external calls
+    """Main entry point allowing external callreleasess
 
     Args:
       args ([str]): command line parameter list
@@ -95,7 +116,15 @@ def main(args):
     args = parse_args(args)
     setup_logging(args.loglevel)
     _logger.debug("Starting Analysis...")
-    print(get_status(args.name))
+    ip = InstalledPackages()
+    ind = Index()
+    if args.list:
+        pprint(ip.list_installed())
+    elif args.releases is not None:
+        pprint(ind.get_latest_releases(package_name=args.releases[0]))
+    elif args.popularity is not None:
+        pprint(ind.get_popularity(package_name=args.popularity[0]))
+
     _logger.info("Done")
 
 
