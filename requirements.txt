@@ -7,3 +7,4 @@ pypixplore
 morfessor
 pip
 tinydb
+pipdeptree
