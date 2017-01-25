@@ -30,7 +30,7 @@ class InstalledPackages:
     def make_dep_json(self):
         """
         Get the dependencies of all packages installed and cache the result in a json.
-            :return: a tinydb database
+        :return: a tinydb database
         """
         deptree = subprocess.getoutput('pipdeptree -j')  # run pipdeptree (python module) on the terminal: outputs json
         pack_json = json.loads(deptree)  # load json to python environment
