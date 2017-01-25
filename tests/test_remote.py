@@ -21,5 +21,5 @@ class Tests:
         assert len(index.get_releases('pandas')) > 0
 
     def test_get_popularity(self, index):
-        assert index.get_popularity is dict
-        assert len(index.get_popularity) > 0
+        assert isinstance(index.get_popularity('numpy'), dict)
+        assert len(index.get_popularity('numpy')) > 0
