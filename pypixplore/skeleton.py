@@ -23,6 +23,7 @@ import logging
 
 from pypixplore import __version__
 from pypixplore.local import InstalledPackages
+from pypixplore.remote import Index
 
 __author__ = "Flavio C. Coelho"
 __copyright__ = "Flavio C. Coelho"
@@ -30,10 +31,6 @@ __license__ = 'GPL v3'
 
 _logger = logging.getLogger(__name__)
 
-
-def get_status(pname):
-    ip = InstalledPackages()
-    return ip.show(pname)
 
 
 def parse_args(args):
@@ -50,14 +47,28 @@ def parse_args(args):
     parser.add_argument(
         '--version',
         action='version',
-        version='pypixplore {ver}'.format(ver=__version__))
+        version='pypixplore {ver}'.format(ver=__version__)
+    )
     parser.add_argument(
         '-s',
         '--status',
         dest="name",
         help="Show Status for a given package.",
         type=str,
-        )
+    )
+    parser.add_argument(
+        '-l',
+        '--list',
+        action='store_true',
+        help="List installed packages",
+    )
+    parser.add_argument(
+        '-r',
+        '--releases',
+        nargs=1,
+        dest="releases",
+        help="List releases packages",
+    )
     parser.add_argument(
         '-v',
         '--verbose',
@@ -65,6 +76,7 @@ def parse_args(args):
         help="set loglevel to INFO",
         action='store_const',
         const=logging.INFO)
+
     parser.add_argument(
         '-vv',
         '--very-verbose',
@@ -96,10 +108,12 @@ def main(args):
     setup_logging(args.loglevel)
     _logger.debug("Starting Analysis...")
     ip = InstalledPackages()
-    if 'l' in vars(args):
+    ind = Index()
+    if args.list:
         print(ip.list_installed())
+    elif args.releases is not None:
+        print(ind.get_releases(package_name=args.releases[0]))
 
-    print(get_status(args.name))
     _logger.info("Done")
 
 
