@@ -14,8 +14,12 @@ class Tests:
 
     def test_list_installed(self, localpacks):
         assert isinstance(localpacks.installed, list)
+        assert isinstance(localpacks.list_installed(), list)
+        assert len(localpacks.list_installed()) > 0
 
     def test_upgradeable(self, localpacks):
         if localpacks.upgradeable():
             assert isinstance(localpacks.upgradeable(), list)
             assert isinstance(localpacks.upgradeable()[0], str)
+
+       

@@ -17,6 +17,7 @@ class Tests:
     def test_cache_update(self, index):
         assert len(index.cache.all()) > 0
 
-    def test_releases(self, index):
-        for package_name in ['pandas', 'numpy', 'tinydb']:
-            assert len(index.get_releases(package_name)) > 0
+
+    def test_get_releases(self,index):
+        assert len(index.get_releases('pandas')) > 0
+
