@@ -68,7 +68,14 @@ def parse_args(args):
         '--releases',
         nargs=1,
         dest="releases",
-        help="List releases packages",
+        help="List package latest release",
+    )
+    parser.add_argument(
+        '-i',
+        '--info',
+        nargs=1,
+        dest="info",
+        help="Shows package info",
     )
 
     parser.add_argument(
@@ -121,9 +128,12 @@ def main(args):
     if args.list:
         pprint(ip.list_installed())
     elif args.releases is not None:
-        pprint(ind.get_releases(package_name=args.releases[0]))
+        pprint(ind.get_latest_releases(package_name=args.releases[0]))
     elif args.popularity is not None:
         pprint(ind.get_popularity(package_name=args.popularity[0]))
+    elif args.info is not None:
+        results = ind.package_info(pkgn=args.info[0])
+        print("Name: {} \nDescription: {}".format(*results))
 
     _logger.info("Done")
 
