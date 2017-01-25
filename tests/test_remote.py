@@ -19,3 +19,7 @@ class Tests:
 
     def test_get_releases(self,index):
         assert len(index.get_releases('pandas')) > 0
+
+    def test_get_popularity(self, index):
+        assert index.get_popularity is dict
+        assert len(index.get_popularity) > 0
