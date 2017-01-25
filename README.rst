@@ -46,23 +46,33 @@ Let's do a step-by-step installation:
 
       pip install -r requirements.txt
       pip install -r test-requirements.txt
+* To make sure that everything is working, run a test with::
 
+      python3 setup.py test
+      
 Congratulations! Now you have a version of the project running in your machine. If you want to contribute and help to build this incredible tool, keep reading!
 
-Running Test
+Contributing
 ===========
 
+To contribute to the project it is better to follow some steps.
 
-Deployment
-===========
+* First, you should decide on what to contribute to, it can be an opened issue or a issue that you can create. If the former is the case, make sure to assign yourself to the task. If it is the latter, open an issue and put yourself as a responsible.
+* Now, implement the contribution on your version of the code, i.e. your fork.
+* After that, build some tests on the tests folder. This is an important step, if you do not build a test to your contribution, it will not be accepted.
+* Run those tests typing::
+
+        python3 setup.py test/TEST_FILE.py
+        
+. Hint: Make sure that you are running with the last version of the main project. Just type ``git pull fccoelho master`` on terminal.
+
+* If you are pretty sure that everything is working, do a pull request. Someone is going to read and test. After the reviwer approval, your contribution will be accepted.
+
 
 Built With
 ===========
 
 * This project has been set up using PyScaffold 2.5.7. For details and usage information on PyScaffold see http://pyscaffold.readthedocs.org/.
-
-Contributing
-===========
 
 Versioning
 ===========
