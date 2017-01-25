@@ -4,11 +4,11 @@ from tinydb import TinyDB, Query
 import datetime
 import time
 
+
 class Index:
     """
     Connects with remote server. PyPI by default.
     """
-
     def __init__(self, server='https://pypi.python.org/pypi', cache_path='pypiexplorer_cache.json'):
         self.client = xmlrpcclient.ServerProxy(server)
         self.cache = TinyDB(cache_path)
@@ -34,6 +34,12 @@ class Index:
             except ValueError:
                 data = []
         return data
+
+    def package_info(self, pkgn):
+        a = self._get_JSON(pkgn)
+        name = a["info"]['name']
+        description = a['info']['description']
+        return (name, description)
 
     def _update_cache(self, data):
         self.cache.insert(data)
@@ -61,6 +67,7 @@ class Index:
 
     def get_by_TROVE_classifier(self, trove):
         raise NotImplementedError
+
 
     def get_well_maintained(self):
         """
