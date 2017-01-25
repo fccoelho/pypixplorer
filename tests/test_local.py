@@ -15,3 +15,7 @@ class Tests:
     def test_list_installed(self, localpacks):
         assert isinstance(localpacks.list_installed(), list)
         assert len(localpacks.list_installed()) > 0
+
+    def test_package_status(self, localpacks):
+        assert isinstance(localpacks.package_status('numpy'), tuple)
+        assert isinstance(localpacks.package_status('@ab'), int)
