@@ -45,14 +45,18 @@ class InstalledPackages:
         if len(list_version) == 0:
             return "Non installed package -- {}".format(str(package_name))
         elif len(list_version) == 1:
-            return list_version[0]  # still need to improve the output
+            deps = list_version[0]  # still need to improve the output
         else:
             max_idx, max_ver = 0, '0'
             for idx, dic in enumerate(list_version):
                 version = dic["package"]["installed_version"]
-                if lsvrs(version) > lsvrs(max_ver):
-                    max_idx, max_ver = idx, version
-            return list_version[max_idx]
+            if lsvrs(version) > lsvrs(max_ver):
+                max_idx, max_ver = idx, version
+            deps = list_version[max_idx]
+        deps_dict = {}
+        for dependency in deps['dependencies']:
+            deps_dict[dependency['package_name']] = {'required_version': dependency['required_version'], 'installed_version': dependency['installed_version']}
+        return deps_dict#, list(deps_dict.keys())
 
     def dependency_graph(self, package_name):
         raise NotImplementedError
