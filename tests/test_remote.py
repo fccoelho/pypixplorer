@@ -16,3 +16,8 @@ class Tests:
 
     def test_cache_update(self, index):
         assert len(index.cache.all()) > 0
+
+    def test_package_info(self):
+        index = Index()
+        assert isinstance(index.package_info("numpy"), str)
+
