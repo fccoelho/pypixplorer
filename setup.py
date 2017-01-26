@@ -10,6 +10,10 @@
 
 import sys
 from setuptools import setup
+from pypixplore import __version__
+
+with open('README.rst') as f:
+    long_desc = f.read()
 
 
 def setup_package():
@@ -18,6 +22,9 @@ def setup_package():
     setup(
         setup_requires=['six', 'pyscaffold>=2.5a0,<2.6a0'] + sphinx,
         use_pyscaffold=True,
+        version=__version__,
+        long_description=long_desc,
+        install_requires=['pip', 'tinydb', 'pipdeptree'],
     )
 
 
