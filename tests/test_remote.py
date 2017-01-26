@@ -45,6 +45,12 @@ class Tests:
         with pytest.raises(AttributeError):
             index.get_git_number(of='forks')
 
+    def test_release_series(self, index):
+
+        assert isinstance(index.release_series('numpy'), list)
+
+        assert len(index.release_series('numpy')) > 0
+
     def test_get_github_repo_by_name(self, index):
 
         assert isinstance(index.get_github_repo_by_name('https://github.com/JoaoCarabetta/pypixplorer'), str)
