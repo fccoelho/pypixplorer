@@ -23,7 +23,7 @@ class InstalledPackages:
         Check whether package_name is installed. If so, returns its version
         :param package_name: str to be consulted by function
         :return:  if installed - returns tuple with name of package and version
-                  if not installed - returns 0
+                  if not installed - returns None
         """
         for item in self.installed:
             name_version = str(item).split(' ')
