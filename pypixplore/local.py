@@ -8,6 +8,7 @@ from asciitree import LeftAligned
 from asciitree.drawing import BoxStyle, BOX_DOUBLE
 
 
+
 class InstalledPackages:
     """
     Gets installed packages and their dependencies
@@ -105,3 +106,15 @@ class InstalledPackages:
         box_tr = LeftAligned(draw=BoxStyle(gfx=BOX_DOUBLE, horiz_len=1))
         print(box_tr(tree))
         return tree
+
+    def package_status(self, package_name):
+        """
+        Check whether package_name is installed. If so, returns its version
+        :param package_name: str to be consulted by function
+        :return:  if installed - returns tuple with name of package and version
+                  if not installed - returns None
+        """
+        for item in self.installed:
+            name_version = str(item).split(' ')
+            if package_name == name_version[0]:
+                return tuple(name_version)
