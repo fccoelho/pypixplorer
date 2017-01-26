@@ -36,3 +36,12 @@ class Tests:
     def test_get_popularity(self, index):
         assert isinstance(index.get_popularity('numpy'), dict)
         assert len(index.get_popularity('numpy')) > 0
+
+    def test_get_forks(self, index):
+        assert isinstance(index.get_number_forks(), int)
+
+    def test_get_stars(self, index):
+        assert isinstance(index.get_number_stars(), int)
+
+    def test_get_watchers(self, index):
+        assert isinstance(get_number_watchers(), int)
