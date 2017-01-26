@@ -31,7 +31,7 @@ class Index:
             try:
                 data = ans.json()
                 self._update_cache(data)
-            except ValueError:
+            except (ValueError, requests.exceptions.ConnectionError):
                 data = []
         return data
 
@@ -63,6 +63,12 @@ class Index:
         raise NotImplementedError
 
     def count_releases(self, package_name, time_days):
+        """
+        This function count how many releases a package received in a period of time in days.
+        :param package_name: The name of the package.
+        :param time_days: The period of time that the function will use to count how many releases the package has.
+        :return: The amount of releases a package received in the given period.
+        """
         json = self._get_JSON(package_name)
         if json == []:
             return(0)
@@ -83,6 +89,12 @@ class Index:
         return count
 
     def rank_of_packages_by_recent_release(self, time_days = 30, size = None):
+        """
+        This function gets all packages and rank them by amount of releases in a period of time.
+        :param time_days: The period of time in days that de function count_releases will use.
+        :param size: If given a size, the function use the first -size- packages of the list_of_all_packages.
+        :return: The rank by recent release using the time in days and the size given.
+        """
         list_of_all_packages = self.client.list_packages()
         results = [self.count_releases(i, time_days) for i in list_of_all_packages[0:size]]
         dictionary = dict(zip(list_of_all_packages, results))
