@@ -18,10 +18,8 @@ class Tests:
         assert len(index.cache.all()) > 0
 
     def test_rank_of_packages_by_recent_release(self):
-        aa = Index().rank_of_packages_by_recent_release(size = 50)
-        assert len(aa) == 50
-        aa = Index().rank_of_packages_by_recent_release(size=200)
-        assert len(aa) == 200
+        aa = Index().rank_of_packages_by_recent_release(size = 20)
+        assert len(aa) == 20
         
     def test_package_info(self):
         ind = Index()
