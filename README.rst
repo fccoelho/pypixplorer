@@ -66,6 +66,9 @@ To contribute to the project it is better to follow some steps.
         
 . Hint: Make sure that you are running with the last version of the main project. Just type ``git pull fccoelho master`` on terminal.
 
+* Now, you have to write the docstring for your function or class. Follow this template_.
+
+    .. _template: http://sphinxcontrib-napoleon.readthedocs.io/en/latest/example_google.html
 * If you are pretty sure that everything is working, do a pull request. Someone is going to read and test. After the reviwer approval, your contribution will be accepted.
 
 

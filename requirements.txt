@@ -3,7 +3,6 @@
 # scipy>=0.9
 #polyglot
 #pycld2
-pypixplore
 morfessor
 pip
 tinydb
