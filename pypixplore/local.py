@@ -25,9 +25,7 @@ class InstalledPackages:
         :return:  if installed - returns tuple with name of package and version
                   if not installed - returns 0
         """
-        pack_list = self.installed
-        for item in pack_list:
+        for item in self.installed:
             name_version = str(item).split(' ')
             if package_name == name_version[0]:
                 return tuple(name_version)
-        return 0
