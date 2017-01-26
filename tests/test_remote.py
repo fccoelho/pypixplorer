@@ -44,4 +44,8 @@ class Tests:
         assert isinstance(index.get_number_stars(), int)
 
     def test_get_watchers(self, index):
-        assert isinstance(get_number_watchers(), int)
+        assert isinstance(index.get_number_watchers(), int)
+
+    def test_release_series(self, index):
+        assert isinstance(index.release_series('numpy'), list)
+        assert len(index.release_series('numpy')) > 0
