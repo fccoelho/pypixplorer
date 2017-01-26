@@ -18,4 +18,4 @@ class Tests:
 
     def test_package_status(self, localpacks):
         assert isinstance(localpacks.package_status('numpy'), tuple)
-        assert isinstance(localpacks.package_status('@ab'), int)
+        assert localpacks.package_status('@ab') is None
