@@ -29,7 +29,6 @@ class InstalledPackages:
         raise NotImplementedError
 
     def upgradeable(self):
-<<<<<<< HEAD
         installed_packages = self.list_installed()
         upgradeable_list = list()
         for package in installed_packages:
@@ -51,12 +50,6 @@ class InstalledPackages:
             print("There are no upgradable packages")
         else:
             return upgradeable_list
-
-
-
-
-=======
-        raise NotImplementedError
 
     def make_dep_json(self):
         """
@@ -112,4 +105,3 @@ class InstalledPackages:
 
     def dependency_graph(self, package_name):
         raise NotImplementedError
->>>>>>> d87534a04c514091cf8f47dae9c33d4a78b2349c
