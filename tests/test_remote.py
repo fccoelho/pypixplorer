@@ -38,10 +38,14 @@ class Tests:
         assert len(index.get_popularity('numpy')) > 0
 
     def test_get_forks(self, index):
-        assert isinstance(index.get_number_forks(), int)
+        assert isinstance(index.get_number_forks('pandas'), int)
 
     def test_get_stars(self, index):
-        assert isinstance(index.get_number_stars(), int)
+        assert isinstance(index.get_number_stars('PySUS'), int)
 
     def test_get_watchers(self, index):
-        assert isinstance(get_number_watchers(), int)
+        assert isinstance(index.get_number_watchers('numpy'), int)
+
+    def test_release_series(self, index):
+        assert isinstance(index.release_series('numpy'), list)
+        assert len(index.release_series('numpy')) > 0

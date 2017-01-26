@@ -3,6 +3,7 @@ import requests
 from tinydb import TinyDB, Query
 import datetime
 import time
+import json
 
 
 class Index:
@@ -51,7 +52,7 @@ class Index:
 
     def get_popularity(self, package_name):
         """
-
+        Gets number of downloads for a given package
         :param package_name: name of the package
         :return: dictionary of number of downloads. keys are 'last_month', 'last_week' and 'last_day'
         """
@@ -59,7 +60,17 @@ class Index:
         return self._get_JSON(package_name)["info"]["downloads"]
 
     def release_series(self, package_name):
-        raise NotImplementedError
+        """
+        Gets most recent releases for a given package
+        :param package_name: name of the package
+        :return: List of itens of the last 10 most recent releases of the package
+        """
+
+        releases_list = list(self._get_JSON(package_name)['releases'].keys())
+        releases_list.sort(reverse=True)
+        last_ten = releases_list[:10]
+
+        return last_ten
 
     def get_by_TROVE_classifier(self, trove):
         raise NotImplementedError
@@ -98,35 +109,29 @@ class Index:
         rank = sorted(dictionary, key=dictionary.get, reverse=True)
         return(rank)
 
-        ## Get Github popularity issue-22
+    def get_number_forks(self, package_name):
+        forks = requests.get('https://api.github.com/repos/fccoelho/{}/forks'.format(package_name))
+        if forks.ok:
+            forks.content
+            forks = forks.text
+            forks = json.loads(forks)
+            forks = len(forks)
+        return forks
 
-        ##import requests
-        ##import json
+    def get_number_stars(self, package_name):
+        stars = requests.get('https://api.github.com/repos/fccoelho/{}/stargazers'.format(package_name))
+        if stars.ok:
+            stars.content
+            stars = stars.text
+            stars = json.loads(stars)  # json to dict
+            stars = len(stars)
+        return stars
 
-        def get_number_forks():
-            forks = requests.get('https://api.github.com/repos/fccoelho/pypixplorer/forks')
-            if forks.ok:
-                forks.content
-                forks = forks.text
-                forks = json.loads(forks)
-                forks = len(forks)
-            return forks
-
-        def get_number_stars():
-            stars = requests.get('https://api.github.com/repos/fccoelho/pypixplorer/stargazers')
-            if stars.ok:
-                stars.content
-                stars = stars.text
-                stars = json.loads(stars)  # json to dict
-                stars = len(stars)
-            return stars
-
-        def get_number_watchers():
-            watchers = requests.get('https://api.github.com/repos/fccoelho/pypixplorer/subscribers')
-            if watchers.ok:
-                watchers.content
-                watchers = watchers.text
-                watchers = json.loads(watchers)  # json to dict
-                watchers = len(watchers)
-            return watchers
-
+    def get_number_watchers(self, package_name):
+        watchers = requests.get('https://api.github.com/repos/fccoelho/{}/subscribers'.format(package_name))
+        if watchers.ok:
+            watchers.content
+            watchers = watchers.text
+            watchers = json.loads(watchers)  # json to dict
+            watchers = len(watchers)
+        return watchers

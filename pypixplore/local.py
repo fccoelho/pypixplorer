@@ -1,14 +1,10 @@
 import pip
-<<<<<<< HEAD
 from pypixplore.remote import Index
-=======
 import subprocess
 import json
 from distutils.version import LooseVersion as lsvrs
 from tinydb import TinyDB, Query
 from pathlib import Path
-
->>>>>>> d87534a04c514091cf8f47dae9c33d4a78b2349c
 
 class InstalledPackages:
     """
@@ -96,8 +92,8 @@ class InstalledPackages:
             max_idx, max_ver = 0, '0'
             for idx, dic in enumerate(list_version):
                 version = dic["package"]["installed_version"]
-            if lsvrs(version) > lsvrs(max_ver):
-                max_idx, max_ver = idx, version
+                if lsvrs(version) > lsvrs(max_ver):
+                    max_idx, max_ver = idx, version
             deps = list_version[max_idx]
 
         deps_dict = {}
@@ -109,3 +105,15 @@ class InstalledPackages:
 
     def dependency_graph(self, package_name):
         raise NotImplementedError
+
+    def package_status(self, package_name):
+        """
+        Check whether package_name is installed. If so, returns its version
+        :param package_name: str to be consulted by function
+        :return:  if installed - returns tuple with name of package and version
+                  if not installed - returns None
+        """
+        for item in self.installed:
+            name_version = str(item).split(' ')
+            if package_name == name_version[0]:
+                return tuple(name_version)
