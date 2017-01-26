@@ -29,6 +29,10 @@ class InstalledPackages:
         raise NotImplementedError
 
     def upgradeable(self):
+        """
+        Lists the locally installed packages that are upgradeable
+        :return: list of dictionaries, each with the name of the package, latest release and python requirements
+        """
         installed_packages = self.list_installed()
         upgradeable_list = list()
         for package in installed_packages:
