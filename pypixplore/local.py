@@ -6,6 +6,7 @@ from tinydb import TinyDB, Query
 from pathlib import Path
 
 
+
 class InstalledPackages:
     """
     Gets installed packages and their dependencies
@@ -81,3 +82,15 @@ class InstalledPackages:
 
     def dependency_graph(self, package_name):
         raise NotImplementedError
+
+    def package_status(self, package_name):
+        """
+        Check whether package_name is installed. If so, returns its version
+        :param package_name: str to be consulted by function
+        :return:  if installed - returns tuple with name of package and version
+                  if not installed - returns None
+        """
+        for item in self.installed:
+            name_version = str(item).split(' ')
+            if package_name == name_version[0]:
+                return tuple(name_version)

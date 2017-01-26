@@ -19,3 +19,7 @@ class Tests:
     def test_get_dependencies(self, localpacks):
         assert isinstance(localpacks.get_dependencies("pip"), dict)
         assert isinstance(localpacks.get_dependencies("JSON_dependencies"), str)
+        
+    def test_package_status(self, localpacks):
+        assert isinstance(localpacks.package_status('numpy'), tuple)
+        assert localpacks.package_status('@ab') is None
