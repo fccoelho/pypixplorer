@@ -22,6 +22,27 @@ class Tests:
         assert len(aa) == 50
         aa = Index().rank_of_packages_by_recent_release(size=200)
         assert len(aa) == 200
+        
+    def test_package_info(self):
+        ind = Index()
+        result = ind.package_info("numpy")
+        assert isinstance(result, tuple)
 
-    def test_get_releases(self,index):
-        assert len(index.get_releases('pandas')) > 0
+
+    def test_releases(self, index):
+         for package_name in ['pandas', 'numpy', 'tinydb']:
+             assert len(index.get_latest_releases(package_name)) > 0
+
+
+    def test_get_popularity(self, index):
+        assert isinstance(index.get_popularity('numpy'), dict)
+        assert len(index.get_popularity('numpy')) > 0
+
+    def test_get_forks(self, index):
+        assert isinstance(index.get_number_forks('pandas'), int)
+
+    def test_get_stars(self, index):
+        assert isinstance(index.get_number_stars('PySUS'), int)
+
+    def test_get_watchers(self, index):
+        assert isinstance(index.get_number_watchers('numpy'), int)

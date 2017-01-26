@@ -3,12 +3,13 @@ import requests
 from tinydb import TinyDB, Query
 import datetime
 import time
+import json
+
 
 class Index:
     """
     Connects with remote server. PyPI by default.
     """
-
     def __init__(self, server='https://pypi.python.org/pypi', cache_path='pypiexplorer_cache.json'):
         self.client = xmlrpcclient.ServerProxy(server)
         self.cache = TinyDB(cache_path)
@@ -35,26 +36,35 @@ class Index:
                 data = []
         return data
 
+    def package_info(self, pkgn):
+        a = self._get_JSON(pkgn)
+        name = a["info"]['name']
+        description = a['info']['description']
+        return (name, description)
+
     def _update_cache(self, data):
         self.cache.insert(data)
 
-    def get_releases(self, package_name):
+    def get_latest_releases(self, package_name):
         return self.client.package_releases(package_name)
 
-    def get_dependencies(self, package_name):
-        raise NotImplementedError
-
-    def dependency_graph(self, package_name):
-        raise NotImplementedError
+    # moved get_dependencies and dependency_graph to local.py, as they can't be obtained remotely
 
     def get_popularity(self, package_name):
-        raise NotImplementedError
+        """
+
+        :param package_name: name of the package
+        :return: dictionary of number of downloads. keys are 'last_month', 'last_week' and 'last_day'
+        """
+
+        return self._get_JSON(package_name)["info"]["downloads"]
 
     def release_series(self, package_name):
         raise NotImplementedError
 
     def get_by_TROVE_classifier(self, trove):
         raise NotImplementedError
+
 
     def get_well_maintained(self):
         """
@@ -71,7 +81,7 @@ class Index:
         """
         json = self._get_JSON(package_name)
         if json == []:
-            return(0)
+            return 0
         keys = json["releases"].keys()
         count = 0
         for key in keys:
@@ -101,5 +111,29 @@ class Index:
         rank = sorted(dictionary, key=dictionary.get, reverse=True)
         return(rank)
 
+    def get_number_forks(self, package_name):
+        forks = requests.get('https://api.github.com/repos/fccoelho/{}/forks'.format(package_name))
+        if forks.ok:
+            forks.content
+            forks = forks.text
+            forks = json.loads(forks)
+            forks = len(forks)
+        return forks
 
+    def get_number_stars(self, package_name):
+        stars = requests.get('https://api.github.com/repos/fccoelho/{}/stargazers'.format(package_name))
+        if stars.ok:
+            stars.content
+            stars = stars.text
+            stars = json.loads(stars)  # json to dict
+            stars = len(stars)
+        return stars
 
+    def get_number_watchers(self, package_name):
+        watchers = requests.get('https://api.github.com/repos/fccoelho/{}/subscribers'.format(package_name))
+        if watchers.ok:
+            watchers.content
+            watchers = watchers.text
+            watchers = json.loads(watchers)  # json to dict
+            watchers = len(watchers)
+        return watchers
