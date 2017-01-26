@@ -1,5 +1,6 @@
 from pypixplore.remote import Index
 import pytest
+import requests
 
 
 class Tests:
@@ -37,11 +38,37 @@ class Tests:
         assert isinstance(index.get_popularity('numpy'), dict)
         assert len(index.get_popularity('numpy')) > 0
 
-    def test_get_forks(self, index):
-        assert isinstance(index.get_number_forks(), int)
+    def test_get_git_number(self, index):
+        with pytest.raises(AttributeError):
+            index.get_git_number()
 
-    def test_get_stars(self, index):
-        assert isinstance(index.get_number_stars(), int)
+        with pytest.raises(AttributeError):
+            index.get_git_number(of='forks')
 
-    def test_get_watchers(self, index):
-        assert isinstance(get_number_watchers(), int)
+    def test_get_github_repo_by_name(self, index):
+
+        assert isinstance(index.get_github_repo_by_name('https://github.com/JoaoCarabetta/pypixplorer'), str)
+
+        assert 'https://api.github.com/repos/' in index.get_github_repo_by_name('https://github.com/JoaoCarabetta/pypixplorer')
+
+        with pytest.raises(AttributeError):
+            index.get_github_repo_by_name(7)
+
+    def test_get_len_request(self, index):
+
+        with pytest.raises(AttributeError):
+            index.get_github_repo_by_name(7)
+
+        assert isinstance(index.get_len_request(requests.get('https://api.github.com/repos/fccoelho/pypixplorer/forks'))
+                          , int)
+
+        assert index.get_len_request(requests.get('https://api.github.com/repos/fccoelhsdfo/pypixsddasfplorer/forks')) is None
+
+
+    def test_get_github_repo_by_search(self, index):
+
+        with pytest.raises(AttributeError):
+            index.get_github_repo_by_name(7)
+
+        assert isinstance(index.get_github_repo_by_search('numpy'), str)
+
