@@ -67,7 +67,7 @@ class Index:
         """
 
         releases_list = list(self._get_JSON(package_name)['releases'].keys())
-        releases_list.sort(reverse = True)
+        releases_list.sort(reverse=True)
         last_ten = releases_list[:10]
 
         return last_ten
