@@ -88,8 +88,6 @@ class InstalledPackages:
         :return: dictionary of dictionaries with the dependencies of package_name as keys
         """
         deps_dict = self.get_dependencies(package_name)
-        if type(deps_dict) is str:
-            raise Exception('package {} not installed!'.format(package_name))
         for dep in deps_dict:
             deps_dict[dep] = {}
         return deps_dict
