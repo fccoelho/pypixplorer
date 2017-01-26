@@ -5,6 +5,7 @@ import time
 import json
 import requests
 
+
 class Index:
     """
     Connects with remote server. PyPI by default.
@@ -51,7 +52,7 @@ class Index:
 
     def get_popularity(self, package_name):
         """
-
+        Gets number of downloads for a given package
         :param package_name: name of the package
         :return: dictionary of number of downloads. keys are 'last_month', 'last_week' and 'last_day'
         """
@@ -59,7 +60,17 @@ class Index:
         return self._get_JSON(package_name)["info"]["downloads"]
 
     def release_series(self, package_name):
-        raise NotImplementedError
+        """
+        Gets most recent releases for a given package
+        :param package_name: name of the package
+        :return: List of itens of the last 10 most recent releases of the package
+        """
+
+        releases_list = list(self._get_JSON(package_name)['releases'].keys())
+        releases_list.sort(reverse=True)
+        last_ten = releases_list[:10]
+
+        return last_ten
 
     def get_by_TROVE_classifier(self, trove):
         raise NotImplementedError
@@ -207,9 +218,4 @@ class Index:
 
 
         return self.get_len_request(request)
-
-
-
-
-
 
