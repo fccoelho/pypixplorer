@@ -4,11 +4,11 @@ from tinydb import TinyDB, Query
 import datetime
 import time
 
+
 class Index:
     """
     Connects with remote server. PyPI by default.
     """
-
     def __init__(self, server='https://pypi.python.org/pypi', cache_path='pypiexplorer_cache.json'):
         self.client = xmlrpcclient.ServerProxy(server)
         self.cache = TinyDB(cache_path)
@@ -35,17 +35,19 @@ class Index:
                 data = []
         return data
 
+    def package_info(self, pkgn):
+        a = self._get_JSON(pkgn)
+        name = a["info"]['name']
+        description = a['info']['description']
+        return (name, description)
+
     def _update_cache(self, data):
         self.cache.insert(data)
 
     def get_latest_releases(self, package_name):
         return self.client.package_releases(package_name)
 
-    def get_dependencies(self, package_name):
-        raise NotImplementedError
-
-    def dependency_graph(self, package_name):
-        raise NotImplementedError
+    # moved get_dependencies and dependency_graph to local.py, as they can't be obtained remotely
 
     def get_popularity(self, package_name):
         """
@@ -61,6 +63,7 @@ class Index:
 
     def get_by_TROVE_classifier(self, trove):
         raise NotImplementedError
+
 
     def get_well_maintained(self):
         """
@@ -95,5 +98,35 @@ class Index:
         rank = sorted(dictionary, key=dictionary.get, reverse=True)
         return(rank)
 
+        ## Get Github popularity issue-22
 
+        ##import requests
+        ##import json
+
+        def get_number_forks():
+            forks = requests.get('https://api.github.com/repos/fccoelho/pypixplorer/forks')
+            if forks.ok:
+                forks.content
+                forks = forks.text
+                forks = json.loads(forks)
+                forks = len(forks)
+            return forks
+
+        def get_number_stars():
+            stars = requests.get('https://api.github.com/repos/fccoelho/pypixplorer/stargazers')
+            if stars.ok:
+                stars.content
+                stars = stars.text
+                stars = json.loads(stars)  # json to dict
+                stars = len(stars)
+            return stars
+
+        def get_number_watchers():
+            watchers = requests.get('https://api.github.com/repos/fccoelho/pypixplorer/subscribers')
+            if watchers.ok:
+                watchers.content
+                watchers = watchers.text
+                watchers = json.loads(watchers)  # json to dict
+                watchers = len(watchers)
+            return watchers
 

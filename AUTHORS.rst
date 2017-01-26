@@ -7,4 +7,4 @@ Developers
 
 FGV's Python summer course class of 2017
 ----------------------------------------
-- Your name here
+- amanda maria
