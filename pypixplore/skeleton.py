@@ -92,8 +92,8 @@ def parse_args(args):
         dest="loglevel",
         help="set loglevel to DEBUG",
         action='store_const',
-        const=logging.DEBUG
-    )
+        const=logging.DEBUG)
+
     parser.add_argument(
         '-rs',
         '--release_series',
@@ -108,6 +108,20 @@ def parse_args(args):
         dest="get_git_stats",
         help="Get specified git stats. Arg 1 can be ['forks', 'watchers', 'stars']. Arg 2 is the package name"
     )
+    parser.add_argument(
+        '-pg',
+        '--python-graphics',
+        help="Return a graph with the numbers of packages that run on Python 2x.x and Python 3.x.x",
+    )
+
+    parser.add_argument(
+        '-d',
+        '--dependencies',
+        nargs=1,
+        dest="pkg_dependencies",
+        help="Returns the direct dependencies of a given package and their versions",
+    )
+
     return parser.parse_args(args)
 
 
@@ -145,7 +159,9 @@ def main(args):
         results = ind.package_info(pkgn=args.info[0])
         print("Name: {} \nDescription: {}".format(*results))
     elif args.tree is not None:
-        print('{}\nnote: only two levels shown.'.format(ip.dependency_graph(package_name=args.tree[0])))
+        print('{}\n(note: only two levels shown)'.format(ip.dependency_graph(package_name=args.tree[0])))
+    elif args.python - graphics is not None:
+        pprint(ind.how_many_packages_version_py())
     elif args.release_series is not None:
         pprint(ind.release_series(package_name=args.release_series[0]))
     elif args.get_git_stats is not None:
@@ -154,6 +170,17 @@ def main(args):
                                                                                   ind.get_git_stats(args.get_git_stats[0],
                                                                                                    args.get_git_stats[1]),
                                                                                   args.get_git_stats[0]))
+    elif args.pkg_dependencies is not None:
+        dep_dict = ip.get_dependencies(package_name=args.pkg_dependencies[0])
+        print("PACKAGE: {}\nINSTALLED VERSION: {}".format(str(args.pkg_dependencies[0]).upper(),
+                                                          str(dep_dict[args.pkg_dependencies[0]])))
+        print("\nDEPENDENCIES:")
+        row = "{:<20}" * 3
+        print(row.format("", "Installed Version", "Required Version"))
+        for dependency in dep_dict['dependencies']:
+            print(row.format(dependency, str(dep_dict['dependencies'][dependency]['installed_version']),
+                             str(dep_dict['dependencies'][dependency]['required_version'])))
+
     _logger.info("Done")
 
 
