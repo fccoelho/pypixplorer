@@ -108,8 +108,10 @@ def parse_args(args):
         nargs=3,
         help="return the rank by recent releases. \
         The first argument is the time in days the function will count the amount of releases.\
-        The second argument is the size of the list of packages the function will iterate.\
-        The third argument is the amount of package of the rank the function will return."
+        The second argument is the size of the list of packages the function will iterate, \
+        to iterate all packages use -None- as input\
+        The third argument is the amount of package of the rank the function will return, \
+        to get the full rank use -None- as input."
     )
     return parser.parse_args(args)
 
