@@ -49,7 +49,7 @@ Contents
 .. toctree::
    :maxdepth: 2
 
-         Quickstart <quickstart>
+          Quickstart <quickstart>
    License <license>
    Authors <authors>
    Changelog <changes>
