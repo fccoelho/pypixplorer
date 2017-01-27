@@ -137,13 +137,13 @@ class Index:
         return watchers
 
     def how_many_packages_version_py(self):
-        print('Esse comando pode demorar um pouco, você deseja continuar? /n Digite S para sim e N para não')
+        print('This command can take a while, do you wish to continue? /n type Y or N')
         aux = input()
         if aux == 'N':
-            break
-        elif aux != 'S':
+            return
+        elif aux != 'y':
             print('Por favor, digite S para sim ou N para não')
-            how_many_packages_version_py()
+            self.how_many_packages_version_py()
 
         list_of_all_packages = self.client.list_packages()
 

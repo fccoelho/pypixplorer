@@ -105,6 +105,7 @@ def parse_args(args):
         '-pg',
         '--python-graphics',
         help="Return a graph with the numbers of packages that run on Python 2x.x and Python 3.x.x",
+    )
     return parser.parse_args(args)
 
 
