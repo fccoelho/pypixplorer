@@ -50,7 +50,7 @@ class Index:
 
     # moved get_dependencies and dependency_graph to local.py, as they can't be obtained remotely
 
-    def get_popularity(self, package_name):
+    def get_downloads(self, package_name):
         """
         Gets number of downloads for a given package
         :param package_name: name of the package

@@ -72,11 +72,11 @@ def parse_args(args):
         help="Returns the dependencies of a given package in a tree graph (up to the 2nd level)",
     )
     parser.add_argument(
-        '-p',
-        '--popularity',
+        '-d',
+        '--downloads',
         nargs=1,
-        dest="popularity",
-        help="Return the popularity of a package as the number of recent downloads",
+        dest="downloads",
+        help="Return a package number of recent downloads",
     )
     parser.add_argument(
         '-v',
@@ -130,8 +130,8 @@ def main(args):
         pprint(ip.list_installed())
     elif args.releases is not None:
         pprint(ind.get_latest_releases(package_name=args.releases[0]))
-    elif args.popularity is not None:
-        pprint(ind.get_popularity(package_name=args.popularity[0]))
+    elif args.downloads is not None:
+        pprint(ind.get_downloads(package_name=args.downloads[0]))
     elif args.info is not None:
         results = ind.package_info(pkgn=args.info[0])
         print("Name: {} \nDescription: {}".format(*results))

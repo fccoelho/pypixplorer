@@ -26,6 +26,12 @@ def test_parse_args_list_packages():
     assert len(vars(args)) > 0
 
 
+def test_parse_args_downloads():
+    args = parse_args(['-d progressbar2'])
+    assert args.downloads is not None
+
+
+
 def test_setup_logging():
     setup_logging(logging.DEBUG)
     assert True

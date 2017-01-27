@@ -34,8 +34,8 @@ class Tests:
 
 
     def test_get_popularity(self, index):
-        assert isinstance(index.get_popularity('numpy'), dict)
-        assert len(index.get_popularity('numpy')) > 0
+        assert isinstance(index.get_downloads('numpy'), dict)
+        assert len(index.get_downloads('numpy')) > 0
 
     def test_get_git_number(self, index):
         with pytest.raises(AttributeError):
