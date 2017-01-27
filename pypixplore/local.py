@@ -47,7 +47,7 @@ class InstalledPackages:
         """
         Get the dependencies of a given installed package
         :param package_name: name of the package
-        :return: a dictionary of dependencies and their versions, or a string saying package is not installed
+        :return: a dictionary of dependencies and their versions
         """
         my_file = Path("pack_db.json")
         if not my_file.is_file():  # test if cache exists
@@ -76,19 +76,20 @@ class InstalledPackages:
                     max_idx, max_ver = idx, version
             deps = list_version[max_idx]
 
-        deps_dict = {}
+        deps_dict = {str(package_name): deps['package']['installed_version'], 'dependencies': {}}
         for dependency in deps['dependencies']:  # changing output to dict
-            deps_dict[dependency['package_name']] = {'required_version': dependency['required_version'],
+            deps_dict['dependencies'][dependency['package_name']] = {'required_version': dependency['required_version'],
                                                      'installed_version': dependency['installed_version']}
 
-        return deps_dict  # , list(deps_dict.keys())
+        return deps_dict
 
     def sub_graph(self, package_name):
         """
         :param package_name:
         :return: dictionary of dictionaries with the dependencies of package_name as keys
         """
-        deps_dict = self.get_dependencies(package_name)
+        sub_dict = self.get_dependencies(package_name)
+        deps_dict = sub_dict['dependencies']
         for dep in deps_dict:
             deps_dict[dep] = {}
         return deps_dict
