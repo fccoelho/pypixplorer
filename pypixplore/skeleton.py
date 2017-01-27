@@ -113,6 +113,7 @@ def parse_args(args):
         The third argument is the amount of package of the rank the function will return, \
         to get the full rank use -None- as input."
     )
+    parser.add_argument(
         '-pg',
         '--python-graphics',
         help="Return a graph with the numbers of packages that run on Python 2x.x and Python 3.x.x",
