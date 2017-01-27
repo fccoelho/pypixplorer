@@ -7,3 +7,4 @@ morfessor
 pip
 tinydb
 pipdeptree
+asciitree
