@@ -1,12 +1,14 @@
 import pip
+<<<<<<< HEAD
 
+=======
+>>>>>>> 43c1ea3160516d66a0d0b419ceaab7c787a41329
 from pypixplore.remote import Index
 import subprocess
 import json
 from distutils.version import LooseVersion as lsvrs
 from tinydb import TinyDB, Query
 from pathlib import Path
-import progressbar2
 
 
 class InstalledPackages:
@@ -145,3 +147,15 @@ class InstalledPackages:
 
     def dependency_graph(self, package_name):
         raise NotImplementedError
+
+    def package_status(self, package_name):
+        """
+        Check whether package_name is installed. If so, returns its version
+        :param package_name: str to be consulted by function
+        :return:  if installed - returns tuple with name of package and version
+                  if not installed - returns None
+        """
+        for item in self.installed:
+            name_version = str(item).split(' ')
+            if package_name == name_version[0]:
+                return tuple(name_version)
