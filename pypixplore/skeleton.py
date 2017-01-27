@@ -102,7 +102,7 @@ def parse_args(args):
         help="Return the 10 most recent releases of the package"
     )
     parser.add_argument(
-        '-rr',
+        '-Rr',
         '--rank-releases',
         dest="rank_releases",
         nargs=3,
