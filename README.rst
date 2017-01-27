@@ -126,6 +126,7 @@ for example, if you want to get the dependency tree of a package, you can::
         ╠═ traitlets
         ╠═ tornado
         ╚═ ipython
+    note: only two levels shown.
 
 Contributing
 ===========
