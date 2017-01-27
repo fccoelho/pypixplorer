@@ -101,7 +101,16 @@ def parse_args(args):
         dest="release_series",
         help="Return the 10 most recent releases of the package"
     )
+    parser.add_argument(
+        '-ggs',
+        '--get_git_stats',
+        nargs=2,
+        dest="get_git_stats",
+        help="Get specified git stats. Arg 1 can be ['forks', 'watchers', 'stars']. Arg 2 is the package name"
+    )
     return parser.parse_args(args)
+
+
 
 
 def setup_logging(loglevel):
@@ -139,6 +148,12 @@ def main(args):
         print('{}\nnote: only two levels shown.'.format(ip.dependency_graph(package_name=args.tree[0])))
     elif args.release_series is not None:
         pprint(ind.release_series(package_name=args.release_series[0]))
+    elif args.get_git_stats is not None:
+        if ind.get_git_stats(args.get_git_stats[0], args.get_git_stats[1]) is not None:
+            pprint('The {} package has {} number of {} on its GitHub Repo'.format(args.get_git_stats[1],
+                                                                                  ind.get_git_stats(args.get_git_stats[0],
+                                                                                                   args.get_git_stats[1]),
+                                                                                  args.get_git_stats[0]))
     _logger.info("Done")
 
 

@@ -20,6 +20,10 @@ def test_parse_args_releases():
     args = parse_args(['-r', 'pandas'])
     assert len(vars(args)) > 0
 
+def test_git_get_stats():
+    args = parse_args(['-ggs', 'forks', 'ARCCSSive'])
+    assert len(vars(args)) > 0
+
 
 def test_parse_args_list_packages():
     args = parse_args(['-l'])
@@ -35,7 +39,6 @@ def test_parse_args_downloads():
 def test_setup_logging():
     setup_logging(logging.DEBUG)
     assert True
-
 
 def test_main():
     args = ['-l']

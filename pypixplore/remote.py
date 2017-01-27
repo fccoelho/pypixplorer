@@ -192,7 +192,7 @@ class Index:
             print(request_api)
             return None
     """
-    def get_git_number(self, of='', package_name=''):
+    def get_git_stats(self, of='', package_name=''):
 
         if of == '':
             print('No information specified on "of:"')

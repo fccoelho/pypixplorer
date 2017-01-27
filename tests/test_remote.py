@@ -39,14 +39,14 @@ class Tests:
 
     def test_get_git_number(self, index):
         with pytest.raises(AttributeError):
-            index.get_git_number()
+            index.get_git_stats()
 
         with pytest.raises(AttributeError):
-            index.get_git_number(of='forks')
+            index.get_git_stats(of='forks')
 
-        assert isinstance(index.get_git_number(of='forks', package_name='ARCCSSive'), int)
+        assert isinstance(index.get_git_stats(of='forks', package_name='ARCCSSive'), int)
 
-        assert index.get_git_number(of='forks', package_name='pandas') is None
+        assert index.get_git_stats(of='forks', package_name='pandas') is None
 
     def test_release_series(self, index):
 
