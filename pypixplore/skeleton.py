@@ -100,6 +100,17 @@ def parse_args(args):
         help="set loglevel to DEBUG",
         action='store_const',
         const=logging.DEBUG)
+
+    parser.add_argument(
+        '-rr',
+        '--rank-releases',
+        dest="rank_releases",
+        nargs=3,
+        help="return the rank by recent releases. \
+        The first argument is the time in days the function will count the amount of releases.\
+        The second argument is the size of the list of packages the function will iterate.\
+        The third argument is the amount of package of the rank the function will return."
+    )
     return parser.parse_args(args)
 
 
@@ -134,6 +145,12 @@ def main(args):
     elif args.info is not None:
         results = ind.package_info(pkgn=args.info[0])
         print("Name: {} \nDescription: {}".format(*results))
+    elif args.rank_releases is not None:
+        results = ind.rank_of_packages_by_recent_release(time_days = args.rank_releases[0],
+                                                         list_size = args.rank_releases[1],
+                                                         rank_size = args.rank_releases[2])
+        for n, package in enumerate(results):
+            print("{}\t{}".format(n+1, package))
 
     _logger.info("Done")
 
