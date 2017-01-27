@@ -54,6 +54,7 @@ def parse_args(args):
         '-s',
         '--status',
         dest="name",
+        nargs=1,
         help="Show Status for a given package.",
         type=str,
     )

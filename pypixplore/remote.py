@@ -138,7 +138,7 @@ class Index:
         *useless, user, repo = hyperlink.split('/')
 
         return 'https://api.github.com/repos/{}/{}/'.format(user, repo)
-
+    """
     def get_github_repo_by_search(self, name):
 
         if not isinstance(name, str):
@@ -179,7 +179,7 @@ class Index:
             print('Page could not be loaded. Error:')
             print(request_api)
             return None
-
+    """
     def get_git_number(self, of='', package_name=''):
 
         if of == '':
@@ -200,7 +200,10 @@ class Index:
             git_repo_api = self.get_github_repo_by_name(hyperlink)
 
         else:
-            git_repo_api = self.get_github_repo_by_search(name)
+            print('Package does not have a GitHub Repo as an official homepage.\n')
+            return None
+            # git_repo_api = self.get_github_repo_by_search(name)
+
 
         # get info from github api
         if of == 'forks':

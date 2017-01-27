@@ -45,6 +45,10 @@ class Tests:
         with pytest.raises(AttributeError):
             index.get_git_number(of='forks')
 
+        assert isinstance(index.get_git_number(of='forks', package_name='ARCCSSive'), int)
+
+        assert index.get_git_number(of='forks', package_name='pandas') is None
+
     def test_release_series(self, index):
 
         assert isinstance(index.release_series('numpy'), list)
@@ -71,10 +75,4 @@ class Tests:
         assert index.get_len_request(requests.get('https://api.github.com/repos/fccoelhsdfo/pypixsddasfplorer/forks')) is None
 
 
-    def test_get_github_repo_by_search(self, index):
-
-        with pytest.raises(AttributeError):
-            index.get_github_repo_by_name(7)
-
-        assert isinstance(index.get_github_repo_by_search('numpy'), str)
 
