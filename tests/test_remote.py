@@ -1,5 +1,6 @@
 from pypixplore.remote import Index
 import pytest
+import requests
 
 
 class Tests:
@@ -33,18 +34,44 @@ class Tests:
 
 
     def test_get_popularity(self, index):
-        assert isinstance(index.get_popularity('numpy'), dict)
-        assert len(index.get_popularity('numpy')) > 0
+        assert isinstance(index.get_downloads('numpy'), dict)
+        assert len(index.get_downloads('numpy')) > 0
 
-    def test_get_forks(self, index):
-        assert isinstance(index.get_number_forks('pandas'), int)
+    def test_get_git_number(self, index):
+        with pytest.raises(AttributeError):
+            index.get_git_number()
 
-    def test_get_stars(self, index):
-        assert isinstance(index.get_number_stars('PySUS'), int)
+        with pytest.raises(AttributeError):
+            index.get_git_number(of='forks')
 
-    def test_get_watchers(self, index):
-        assert isinstance(index.get_number_watchers('numpy'), int)
+        assert isinstance(index.get_git_number(of='forks', package_name='ARCCSSive'), int)
+
+        assert index.get_git_number(of='forks', package_name='pandas') is None
 
     def test_release_series(self, index):
+
         assert isinstance(index.release_series('numpy'), list)
+
         assert len(index.release_series('numpy')) > 0
+
+    def test_get_github_repo_by_name(self, index):
+
+        assert isinstance(index.get_github_repo_by_name('https://github.com/JoaoCarabetta/pypixplorer'), str)
+
+        assert 'https://api.github.com/repos/' in index.get_github_repo_by_name('https://github.com/JoaoCarabetta/pypixplorer')
+
+        with pytest.raises(AttributeError):
+            index.get_github_repo_by_name(7)
+
+    def test_get_len_request(self, index):
+
+        with pytest.raises(AttributeError):
+            index.get_github_repo_by_name(7)
+
+        assert isinstance(index.get_len_request(requests.get('https://api.github.com/repos/fccoelho/pypixplorer/forks'))
+                          , int)
+
+        assert index.get_len_request(requests.get('https://api.github.com/repos/fccoelhsdfo/pypixsddasfplorer/forks')) is None
+
+
+
