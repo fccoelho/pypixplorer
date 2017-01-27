@@ -69,7 +69,7 @@ def parse_args(args):
         '--dependency-tree',
         nargs=1,
         dest="tree",
-        help="Returns the dependencies of a given package in a tree graph",
+        help="Returns the dependencies of a given package in a tree graph (up to the 2nd level)",
     )
     parser.add_argument(
         '-p',
@@ -136,7 +136,7 @@ def main(args):
         results = ind.package_info(pkgn=args.info[0])
         print("Name: {} \nDescription: {}".format(*results))
     elif args.tree is not None:
-        print(ip.dependency_graph(package_name=args.tree[0]))
+        print('{}\nnote: only two levels shown.'.format(ip.dependency_graph(package_name=args.tree[0])))
     elif args.release_series is not None:
         pprint(ind.release_series(package_name=args.release_series[0]))
     _logger.info("Done")
