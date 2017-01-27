@@ -21,10 +21,11 @@ class Tests:
         with pytest.raises(Exception) as excinfo:
             localpacks.get_dependencies("jghjjhd")
         assert """package {} not installed! or are you requesting dependencies of a standard library
-            package?\n\tthey don't have those!""".format("jghjjhd") in str(excinfo.value)
+            package? they don't have those!""".format("jghjjhd") in str(excinfo.value)
 
     def test_dependency_graph(self, localpacks):
-        assert isinstance(localpacks.dependency_graph("pip"), dict)
+        assert isinstance(localpacks.dependency_graph("pip"), str)
+        assert isinstance(localpacks.sub_graph("pip"), dict)
 
     def test_package_status(self, localpacks):
         assert isinstance(localpacks.package_status('numpy'), tuple)
