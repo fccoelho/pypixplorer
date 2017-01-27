@@ -204,6 +204,10 @@ class Index:
 
         json = self._get_JSON(package_name)
 
+        if len(json) == 0:
+            print('Package not found')
+            raise AttributeError
+
         hyperlink = json["info"]['home_page']
 
         name = json['info']['name']

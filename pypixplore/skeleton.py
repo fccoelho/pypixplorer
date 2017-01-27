@@ -150,7 +150,7 @@ def main(args):
         pprint(ind.release_series(package_name=args.release_series[0]))
     elif args.get_git_stats is not None:
         if ind.get_git_stats(args.get_git_stats[0], args.get_git_stats[1]) is not None:
-            pprint('The {} package has {} number of {} on its GitHub Repo'.format(args.get_git_stats[1],
+            pprint('The {} package has {} {} on its GitHub Repo'.format(args.get_git_stats[1],
                                                                                   ind.get_git_stats(args.get_git_stats[0],
                                                                                                    args.get_git_stats[1]),
                                                                                   args.get_git_stats[0]))
