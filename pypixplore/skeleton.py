@@ -157,12 +157,14 @@ def main(args):
         pprint(ind.release_series(package_name=args.release_series[0]))
     elif args.pkg_dependencies is not None:
         dep_dict = ip.get_dependencies(package_name=args.pkg_dependencies[0])
-        print("PACKAGE: {}\nINSTALLED VERSION: {}".format(str(args.pkg_dependencies[0]).upper(), str(dep_dict[args.pkg_dependencies[0]])))
+        print("PACKAGE: {}\nINSTALLED VERSION: {}".format(str(args.pkg_dependencies[0]).upper(),
+                                                          str(dep_dict[args.pkg_dependencies[0]])))
         print("\nDEPENDENCIES:")
         row = "{:<20}" * 3
         print(row.format("", "Installed Version", "Required Version"))
         for dependency in dep_dict['dependencies']:
-            print(row.format(dependency, str(dep_dict['dependencies'][dependency]['installed_version']), str(dep_dict['dependencies'][dependency]['required_version'])))
+            print(row.format(dependency, str(dep_dict['dependencies'][dependency]['installed_version']),
+                             str(dep_dict['dependencies'][dependency]['required_version'])))
 
     _logger.info("Done")
 
