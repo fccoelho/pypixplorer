@@ -81,6 +81,51 @@ After installation you will get a command-line tool named `ppx`. You can learn h
       -v, --verbose         set loglevel to INFO
       -vv, --very-verbose   set loglevel to DEBUG
 
+for example, if you want to get the dependency tree of a package, you can::
+
+    ppx -t jupyter
+    jupyter
+     ╠═ notebook
+     ║  ╠═ jupyter-client
+     ║  ╠═ jupyter-core
+     ║  ╠═ nbconvert
+     ║  ╠═ tornado
+     ║  ╠═ nbformat
+     ║  ╠═ traitlets
+     ║  ╠═ ipython-genutils
+     ║  ╠═ terminado
+     ║  ╠═ jinja2
+     ║  ╚═ ipykernel
+     ╠═ ipywidgets
+     ║  ╠═ ipython
+     ║  ╠═ traitlets
+     ║  ╠═ widgetsnbextension
+     ║  ╚═ ipykernel
+     ╠═ jupyter-console
+     ║  ╠═ prompt-toolkit
+     ║  ╠═ ipython
+     ║  ╠═ jupyter-client
+     ║  ╠═ pygments
+     ║  ╚═ ipykernel
+     ╠═ nbconvert
+     ║  ╠═ jupyter-core
+     ║  ╠═ traitlets
+     ║  ╠═ pygments
+     ║  ╠═ entrypoints
+     ║  ╠═ nbformat
+     ║  ╠═ jinja2
+     ║  ╚═ mistune
+     ╠═ qtconsole
+     ║  ╠═ jupyter-client
+     ║  ╠═ jupyter-core
+     ║  ╠═ traitlets
+     ║  ╠═ ipykernel
+     ║  ╚═ pygments
+     ╚═ ipykernel
+        ╠═ jupyter-client
+        ╠═ traitlets
+        ╠═ tornado
+        ╚═ ipython
 
 Contributing
 ===========
