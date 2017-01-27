@@ -24,8 +24,8 @@ class InstalledPackages:
         """
         return self.installed
 
-    def show(self, name=None):
-        raise NotImplementedError
+    def show(self, package_name):
+        return pip.main(['show', package_name])
 
     def upgradeable(self):
         raise NotImplementedError
