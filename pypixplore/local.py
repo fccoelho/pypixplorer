@@ -97,7 +97,7 @@ class InstalledPackages:
         """
         takes package_name and outputs its dependencies and their own dependencies plus an asciitree of this arrangement.
         :param package_name:
-        :return: dictionary of dictionaries with dependencies of package name
+        :return: asciitree of the dependencies of the given package, up to the second level
         """
         sub_tr = {package_name: self.sub_graph(package_name)}
         tree = sub_tr

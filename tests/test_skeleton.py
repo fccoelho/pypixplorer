@@ -30,7 +30,13 @@ def test_parse_args_downloads():
     args = parse_args(['-d progressbar2'])
     assert args.downloads is not None
 
+def test_parse_args_get_dependencies():
+    args = parse_args(['-d'])
+    assert len(vars(args)) == 1
 
+def test_parse_args_dependency_graph():
+    args = parse_args(['-t'])
+    assert len(vars(args)) == 1
 
 def test_setup_logging():
     setup_logging(logging.DEBUG)
