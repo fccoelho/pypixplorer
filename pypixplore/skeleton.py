@@ -100,6 +100,13 @@ def parse_args(args):
         help="set loglevel to DEBUG",
         action='store_const',
         const=logging.DEBUG)
+    parser.add_argument(
+        '-rs',
+        '--release_series',
+        nargs=1,
+        dest="release_series",
+        help="Return the 10 most recent releases of the package")
+
     return parser.parse_args(args)
 
 
@@ -134,6 +141,8 @@ def main(args):
     elif args.info is not None:
         results = ind.package_info(pkgn=args.info[0])
         print("Name: {} \nDescription: {}".format(*results))
+    elif args.release_series is not None:
+        pprint(ind.release_series(package_name=args.release_series[0]))
 
     _logger.info("Done")
 
