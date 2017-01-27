@@ -234,7 +234,6 @@ class Index:
 
         return self.get_len_request(request)
 
-
     def how_many_packages_version_py(self):
         print('This command can take a while, do you wish to continue? /n type Y or N')
         aux = input()
@@ -267,15 +266,15 @@ class Index:
                 else:
                     pass
 
-        count_final = [round((count2master/len(list_of_all_packages))*10), round((count3master/len(list_of_all_packages))*10)]
+        count_final = [round((count2master / len(list_of_all_packages)) * 10),
+                       round((count3master / len(list_of_all_packages)) * 10)]
 
-        #count_final = {'Python 2.x.x': count2master/len(list_of_all_packages), 'Python 3.x.x': count3master/len(list_of_all_packages)}
-        #plt.bar(range(len(count_final)), count_final.values(), align='center')
-        #plt.xticks(range(len(count_final)), count_final.keys())
-        self.print_graphics(count_final[0],count_final[1])
+        # count_final = {'Python 2.x.x': count2master/len(list_of_all_packages), 'Python 3.x.x': count3master/len(list_of_all_packages)}
+        # plt.bar(range(len(count_final)), count_final.values(), align='center')
+        # plt.xticks(range(len(count_final)), count_final.keys())
+        self.print_graphics(count_final[0], count_final[1])
 
-
-    def print_graphics(self,python2,python3):
+    def print_graphics(self, python2, python3):
         count_python2 = ""
         count_python3 = ""
 
@@ -284,8 +283,8 @@ class Index:
         for i in range(0, python3):
             count_python3 = count_python3 + "*"
         print('\t\t\t |')
-        print('Python 2.x.x |{} {}%'.format(count_python2, python2*10))
+        print('Python 2.x.x |{} {}%'.format(count_python2, python2 * 10))
         print('\t\t\t |')
         print('\t\t\t |')
-        print('Python 3.x.x |{} {}%'.format(count_python3, python3*10))
+        print('Python 3.x.x |{} {}%'.format(count_python3, python3 * 10))
         print('\t\t\t |')
