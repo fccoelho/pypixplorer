@@ -158,7 +158,7 @@ def main(args):
     elif args.release_series is not None:
         pprint(ind.release_series(package_name=args.release_series[0]))
 
-
+    _logger.info("Done")
 def run():
     """Entry point for console_scripts
     """
