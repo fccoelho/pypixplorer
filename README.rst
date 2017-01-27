@@ -12,7 +12,7 @@ Download the package to your env with::
 
 
 Getting Started
-===========
+===============
 These instructions will get you a copy of this package up and running in your local machine for development and test porpouses. Keep reading if you want to deploy and contribute to the project.
 
 Prerequisites
@@ -51,6 +51,36 @@ Let's do a step-by-step installation:
       python3 setup.py test
       
 Congratulations! Now you have a version of the project running in your machine. If you want to contribute and help to build this incredible tool, keep reading!
+
+Using
+=====
+
+After installation you will get a command-line tool named `ppx`. You can learn how to use it by issuing the following command::
+
+    ppx -h
+    usage: skeleton.py [-h] [--version] [-s NAME] [-l] [-r RELEASES] [-i INFO]
+                   [-p POPULARITY] [-v] [-vv]
+
+    Copyright (C) 2017 Flavio C. Coelho This program comes with ABSOLUTELY NO
+    WARRANTY; This is free software, and you are welcome to redistribute it under
+    certain conditions; For details access:
+    https://www.gnu.org/licenses/gpl-3.0.en.html Explore Python Package Index
+
+    optional arguments:
+      -h, --help            show this help message and exit
+      --version             show program's version number and exit
+      -s NAME, --status NAME
+                            Show Status for a given package.
+      -l, --list            List installed packages
+      -r RELEASES, --releases RELEASES
+                            List package latest release
+      -i INFO, --info INFO  Shows package info
+      -p POPULARITY, --popularity POPULARITY
+                            Return the popularity of a package as the number of
+                            recent downloads
+      -v, --verbose         set loglevel to INFO
+      -vv, --very-verbose   set loglevel to DEBUG
+
 
 Contributing
 ===========
