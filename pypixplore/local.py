@@ -1,14 +1,13 @@
 import pip
-<<<<<<< HEAD
+
 from pypixplore.remote import Index
-=======
 import subprocess
 import json
 from distutils.version import LooseVersion as lsvrs
 from tinydb import TinyDB, Query
 from pathlib import Path
+import progressbar2
 
->>>>>>> d87534a04c514091cf8f47dae9c33d4a78b2349c
 
 class InstalledPackages:
     """
@@ -28,10 +27,12 @@ class InstalledPackages:
     def show(self, name=None):
         raise NotImplementedError
 
-    def upgradeable(self):
+    def upgradeable(self, *args):
         """
-        Lists the locally installed packages that are upgradeable
-        :return: list of dictionaries, each with the name of the package, latest release and python requirements
+        Lists upgradeable packages, their latest version and python requirements
+        :param args: optional, names of packages to check if upgradeable
+        :return: list of dictionaries, each of which contains the name of upgradeable package, latest version
+        and its python requirements
         """
         installed_packages = self.list_installed()
         upgradeable_list = list()
@@ -50,10 +51,45 @@ class InstalledPackages:
                     upgradeable_package = {'Name': package_name, 'Release': latest_version,
                                            'Python Requirement': python_requirement}
                     upgradeable_list.append(upgradeable_package)
-        if not upgradeable_list:
-            print("There are no upgradable packages")
+        if upgradeable_list:
+            if not args:
+                return upgradeable_list
+            else:
+                possible_upgrades = list()
+                for arg in args:
+                    for item in upgradeable_list:
+                        if arg == item['Name']:
+                            possible_upgrades.append(arg)
+                            break
+                if not possible_upgrades:
+                    print("None of the packages specified are upgradeable")
+                else:
+                    return possible_upgrades
         else:
-            return upgradeable_list
+            print('There are no upgradeable packages')
+
+    def upgrade(self, *args):
+        """
+        Downloads the latest version of upgradeable packages (all or specified)
+        :param args: optional, names of packages to upgrade (if they are upgradeable)
+        """
+        packages = self.upgradeable(args)
+        if packages is not None:
+            package_names = list()
+            for item in self.upgradeable():
+                package_names.append(item['Name'])
+            if args:
+                for arg in args:
+                    if arg in package_names:
+                        print('Upgrading package {}'.format(arg))
+                        pip.main(['install', arg])
+                    else:
+                        print('The package {} is not upgradeable'.format(arg))
+            else:
+                for package in package_names:
+                    print('Upgrading package {}'.format(package))
+                    pip.main(['install', package])
+
 
     def make_dep_json(self):
         """

@@ -100,6 +100,22 @@ def parse_args(args):
         help="set loglevel to DEBUG",
         action='store_const',
         const=logging.DEBUG)
+
+    parser.add_argument(
+        '-u',
+        '--upgradeable',
+        nargs='+',
+        dest = 'upgradeable',
+        help='Returns upgradeable packages (defaults to all)'
+    )
+
+    parser.add_argument(
+        '-uu',
+        '--upgrade upgradeable',
+        dest='upgrade',
+        nargs='+',
+        help='Install upgradeable packages (defaults to all)'
+    )
     return parser.parse_args(args)
 
 
@@ -134,6 +150,10 @@ def main(args):
     elif args.info is not None:
         results = ind.package_info(pkgn=args.info[0])
         print("Name: {} \nDescription: {}".format(*results))
+    elif args.upgrade is not None:
+        pprint(ip.upgrade())
+    elif args.upgradeable is not None:
+        pprint(ip.upgradeable())
 
     _logger.info("Done")
 
