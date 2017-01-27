@@ -135,3 +135,58 @@ class Index:
             watchers = json.loads(watchers)  # json to dict
             watchers = len(watchers)
         return watchers
+
+    def how_many_packages_version_py(self):
+        print('Esse comando pode demorar um pouco, você deseja continuar? /n Digite S para sim e N para não')
+        aux = input()
+        if aux == 'N':
+            break
+        elif aux != 'S':
+            print('Por favor, digite S para sim ou N para não')
+            how_many_packages_version_py()
+
+        list_of_all_packages = self.client.list_packages()
+
+        count2master = 0
+        count3master = 0
+
+        for package_name in list_of_all_packages:
+            package_classifiers = self._get_JSON(package_name)['info']['classifiers']
+
+            python2counter = 0
+            python3counter = 0
+
+            for version_control in package_classifiers:
+                if 'Python :: 2' in version_control & python2counter == 0:
+                    python2counter += 1
+                    count2master += 1
+                else:
+                    pass
+                if 'Python :: 3' in version_control & python3counter == 0:
+                    python3counter += 1
+                    count3master += 1
+                else:
+                    pass
+
+        count_final = [round((count2master/len(list_of_all_packages))*10), round((count3master/len(list_of_all_packages))*10)]
+
+        #count_final = {'Python 2.x.x': count2master/len(list_of_all_packages), 'Python 3.x.x': count3master/len(list_of_all_packages)}
+        #plt.bar(range(len(count_final)), count_final.values(), align='center')
+        #plt.xticks(range(len(count_final)), count_final.keys())
+        self.print_graphics(count_final[0],count_final[1])
+
+
+    def print_graphics(self,python2,python3):
+        count_python2 = ""
+        count_python3 = ""
+
+        for i in range(0, python2):
+            count_python2 = count_python2 + "*"
+        for i in range(0, python3):
+            count_python3 = count_python3 + "*"
+        print('\t\t\t |')
+        print('Python 2.x.x |{} {}%'.format(count_python2, python2*10))
+        print('\t\t\t |')
+        print('\t\t\t |')
+        print('Python 3.x.x |{} {}%'.format(count_python3, python3*10))
+        print('\t\t\t |')

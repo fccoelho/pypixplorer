@@ -100,6 +100,11 @@ def parse_args(args):
         help="set loglevel to DEBUG",
         action='store_const',
         const=logging.DEBUG)
+
+    parser.add_argument(
+        '-pg',
+        '--python-graphics',
+        help="Return a graph with the numbers of packages that run on Python 2x.x and Python 3.x.x",
     return parser.parse_args(args)
 
 
@@ -134,7 +139,8 @@ def main(args):
     elif args.info is not None:
         results = ind.package_info(pkgn=args.info[0])
         print("Name: {} \nDescription: {}".format(*results))
-
+    elif args.python-graphics is not None:
+        pprint(ind.how_many_packages_version_py())
     _logger.info("Done")
 
 
