@@ -77,7 +77,13 @@ def parse_args(args):
         dest="info",
         help="Shows package info",
     )
-
+    parser.add_argument(
+        '-t',
+        '--dependency-tree',
+        nargs=1,
+        dest="tree",
+        help="Returns the dependencies of a given package in a tree graph",
+    )
     parser.add_argument(
         '-p',
         '--popularity',
@@ -91,15 +97,16 @@ def parse_args(args):
         dest="loglevel",
         help="set loglevel to INFO",
         action='store_const',
-        const=logging.INFO)
-
+        const=logging.INFO
+    )
     parser.add_argument(
         '-vv',
         '--very-verbose',
         dest="loglevel",
         help="set loglevel to DEBUG",
         action='store_const',
-        const=logging.DEBUG)
+        const=logging.DEBUG
+    )
     return parser.parse_args(args)
 
 
@@ -115,7 +122,7 @@ def setup_logging(loglevel):
 
 
 def main(args):
-    """Main entry point allowing external callreleasess
+    """Main entry point allowing external call releasess
 
     Args:
       args ([str]): command line parameter list
@@ -134,6 +141,8 @@ def main(args):
     elif args.info is not None:
         results = ind.package_info(pkgn=args.info[0])
         print("Name: {} \nDescription: {}".format(*results))
+    elif args.tree is not None:
+        print(ip.dependency_graph(package_name=args.tree[0]))
 
     _logger.info("Done")
 

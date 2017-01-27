@@ -65,7 +65,7 @@ class InstalledPackages:
 
         if len(list_version) == 0:
             raise Exception("""package {} not installed! or are you requesting dependencies of a standard library
-            package?\n\tthey don't have those!""".format(package_name))
+            package? they don't have those!""".format(package_name))
         elif len(list_version) == 1:
             deps = list_version[0]
         else:  # check which version is latest
@@ -104,8 +104,7 @@ class InstalledPackages:
         for node in sub_tr[package_name]:
             tree[package_name][node] = self.sub_graph(node)
         box_tr = LeftAligned(draw=BoxStyle(gfx=BOX_DOUBLE, horiz_len=1))
-        print(box_tr(tree))
-        return tree
+        return box_tr(tree)
 
     def package_status(self, package_name):
         """
