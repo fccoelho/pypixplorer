@@ -95,13 +95,13 @@ def parse_args(args):
         const=logging.DEBUG
     )
     parser.add_argument(
-    parser.add_argument(
         '-rs',
         '--release_series',
         nargs=1,
         dest="release_series",
         help="Return the 10 most recent releases of the package"
     )
+    parser.add_argument(
         '-rr',
         '--rank-releases',
         dest="rank_releases",
@@ -151,13 +151,12 @@ def main(args):
         results = ind.rank_of_packages_by_recent_release(time_days = args.rank_releases[0],
                                                          list_size = args.rank_releases[1],
                                                          rank_size = args.rank_releases[2])
+        for n, package in enumerate(results):
+            print("{}\t{}".format(n+1, package))
     elif args.tree is not None:
         print('{}\nnote: only two levels shown.'.format(ip.dependency_graph(package_name=args.tree[0])))
     elif args.release_series is not None:
         pprint(ind.release_series(package_name=args.release_series[0]))
-        for n, package in enumerate(results):
-            print("{}\t{}".format(n+1, package))
-    _logger.info("Done")
 
 
 def run():
