@@ -1,9 +1,9 @@
 import xmlrpc.client as xmlrpcclient
-import requests
 from tinydb import TinyDB, Query
 import datetime
 import time
 import json
+import requests
 
 
 class Index:
@@ -121,29 +121,116 @@ class Index:
         rank = sorted(dictionary, key=dictionary.get, reverse=True)
         return(rank)
 
-    def get_number_forks(self, package_name):
-        forks = requests.get('https://api.github.com/repos/fccoelho/{}/forks'.format(package_name))
-        if forks.ok:
-            forks.content
-            forks = forks.text
-            forks = json.loads(forks)
-            forks = len(forks)
-        return forks
+    def get_len_request(self, request):
 
-    def get_number_stars(self, package_name):
-        stars = requests.get('https://api.github.com/repos/fccoelho/{}/stargazers'.format(package_name))
-        if stars.ok:
-            stars.content
-            stars = stars.text
-            stars = json.loads(stars)  # json to dict
-            stars = len(stars)
-        return stars
+        if not isinstance(request, requests.models.Response):
+            print('Class expected as input. <requests.models.Response>')
+            raise AttributeError
 
-    def get_number_watchers(self, package_name):
-        watchers = requests.get('https://api.github.com/repos/fccoelho/{}/subscribers'.format(package_name))
-        if watchers.ok:
-            watchers.content
-            watchers = watchers.text
-            watchers = json.loads(watchers)  # json to dict
-            watchers = len(watchers)
-        return watchers
+        if request.ok:
+            count = len(json.loads(request.text))
+
+            if isinstance(count, int):
+                return count
+
+            else:
+                print('Not an int')
+                raise AttributeError
+        else:
+            print('Page could not be loaded. Error:')
+            print(request)
+            return None
+
+    def get_github_repo_by_name(self, hyperlink):
+
+        if not isinstance(hyperlink, str):
+            print('String expected as input')
+            raise AttributeError
+
+        *useless, user, repo = hyperlink.split('/')
+
+        return 'https://api.github.com/repos/{}/{}/'.format(user, repo)
+    """
+    def get_github_repo_by_search(self, name):
+
+        if not isinstance(name, str):
+            print('String expected as input')
+            raise AttributeError
+
+        request_api = requests.get('https://api.github.com/search/repositories?q={}'.format(name))
+
+        if request_api.ok:
+            request_api_json = json.load(request_api.text)
+
+            if request_api_json['total_count'] == 0:
+                print('\nPackage {} not found on GitHub\n'.format(name))
+                return None
+
+            else:
+                print('{} repositories were found on GitHub '
+                      'based on the package name'.format(request_api_json['total_count']))
+
+                print('Here are the first 5 results. Type 0 - 4 to choose the one that is the correct.'
+                      'Type 9 otherwise to quit.')
+                for i in range(5):
+                    print('\n[{}]\nName:{}\nLink:{}'.format(i,request_api_json['items'][i]['name'],
+                                                      request_api_json['items'][i]['url']))
+
+                num = input('Type number here: ')
+
+                if num == 9:
+                    return None
+
+                if num <= 4:
+                    return request_api_json['items'][num]['url']
+
+                else:
+                    print("Not allowed value")
+                    raise AttributeError
+        else:
+            print('Page could not be loaded. Error:')
+            print(request_api)
+            return None
+    """
+    def get_git_number(self, of='', package_name=''):
+
+        if of == '':
+            print('No information specified on "of:"')
+            raise AttributeError
+
+        if package_name == '':
+            print('No package specified')
+            raise AttributeError
+
+        json = self._get_JSON(package_name)
+
+        hyperlink = json["info"]['home_page']
+
+        name = json['info']['name']
+
+        if 'github' in hyperlink:
+            git_repo_api = self.get_github_repo_by_name(hyperlink)
+
+        else:
+            print('Package does not have a GitHub Repo as an official homepage.\n')
+            return None
+            # git_repo_api = self.get_github_repo_by_search(name)
+
+
+        # get info from github api
+        if of == 'forks':
+            request = requests.get(git_repo_api + 'forks')
+
+        elif of == 'stars':
+            request = requests.get(git_repo_api + 'stargazers')
+
+        elif of == 'watchers':
+            request = requests.get(git_repo_api + 'subscribers')
+
+        else:
+            print('{} is not a possible option for "of".\n If you think that it should be implemented, implement!')
+            raise AttributeError
+
+
+        return self.get_len_request(request)
+
