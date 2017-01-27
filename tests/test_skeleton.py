@@ -26,6 +26,11 @@ def test_parse_args_list_packages():
     assert len(vars(args)) > 0
 
 
+def test_parse_args_package_status():
+    args = parse_args((['-s', 'pandas']))
+    assert len(vars(args)) > 0
+
+
 def test_parse_args_downloads():
     args = parse_args(['-d progressbar2'])
     assert args.downloads is not None
