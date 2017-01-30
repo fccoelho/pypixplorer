@@ -169,8 +169,8 @@ def main(args):
         print("Name: {} \nDescription: {}".format(*results))
     elif args.tree is not None:
         print('{}\n(note: only two levels shown)'.format(ip.dependency_graph(package_name=args.tree[0])))
-    #elif args.python - graphics is not None:
-    #    pprint(ind.how_many_packages_version_py())
+    elif args.python - graphics is not None:
+        pprint(ind.how_many_packages_version_py())
     elif args.release_series is not None:
         pprint(ind.release_series(package_name=args.release_series[0]))
     elif args.pkg_dependencies is not None:
