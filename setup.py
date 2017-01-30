@@ -11,8 +11,9 @@
 import sys
 from setuptools import setup
 from pypixplore import __version__
+import codecs
 
-with open('README.rst') as f:
+with codecs.open('README.rst', encoding='utf8') as f:
     long_desc = f.read()
 
 

@@ -30,13 +30,21 @@ def test_parse_args_downloads():
     args = parse_args(['-d progressbar2'])
     assert args.downloads is not None
 
+
 def test_parse_args_get_dependencies():
     args = parse_args(['-D pip'])
     assert len(vars(args)) > 0
 
+
 def test_parse_args_dependency_graph():
     args = parse_args(['-t pip'])
     assert len(vars(args)) > 0
+
+
+def test_parse_args_order_releases():
+    args = parse_args(['-o', '20', '20', '20'])
+    assert args.order_releases is not None
+
 
 def test_setup_logging():
     setup_logging(logging.DEBUG)
