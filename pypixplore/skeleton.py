@@ -102,6 +102,13 @@ def parse_args(args):
         help="Return the 10 most recent releases of the package"
     )
     parser.add_argument(
+        '-gn',
+        '--get_git_number',
+        nargs=2,
+        dest="get_git_number",
+        help="Return number of forks/stars/watchers of a package"
+    )
+    parser.add_argument(
         '-c',
         '--count_releases',
         nargs=2,
@@ -155,13 +162,15 @@ def main(args):
         pprint(ind.get_downloads(package_name=args.downloads[0]))
     elif args.count_releases is not None:
         pprint(ind.count_releases(package_name=args.count_releases[0],time_days=args.count_releases[1]))
+    elif args.get_git_number is not None:
+        pprint(ind.get_git_number(of=args.get_git_number[1], package_name=args.get_git_number[0]))
     elif args.info is not None:
         results = ind.package_info(pkgn=args.info[0])
         print("Name: {} \nDescription: {}".format(*results))
     elif args.tree is not None:
         print('{}\n(note: only two levels shown)'.format(ip.dependency_graph(package_name=args.tree[0])))
-    elif args.python - graphics is not None:
-        pprint(ind.how_many_packages_version_py())
+    #elif args.python - graphics is not None:
+    #    pprint(ind.how_many_packages_version_py())
     elif args.release_series is not None:
         pprint(ind.release_series(package_name=args.release_series[0]))
     elif args.pkg_dependencies is not None:
