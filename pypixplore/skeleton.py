@@ -36,14 +36,6 @@ def parse_args(args):
         version='pypixplore {ver}'.format(ver=__version__)
     )
     parser.add_argument(
-        '-s',
-        '--status',
-        dest="name",
-        nargs=1,
-        help="Show Status for a given package.",
-        type=str,
-    )
-    parser.add_argument(
         '-l',
         '--list',
         action='store_true',
