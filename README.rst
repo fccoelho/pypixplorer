@@ -31,7 +31,7 @@ First of all, make sure that you have installed:
 
 
 Installing
------------
+----------
 
 Let's do a step-by-step installation:
 
@@ -115,7 +115,7 @@ To contribute to the project it is better to follow some steps.
 
 
 Built With
-===========
+==========
 
 * This project has been set up using PyScaffold 2.5.7. For details and usage information on PyScaffold see http://pyscaffold.readthedocs.org/
 

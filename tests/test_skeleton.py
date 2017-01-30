@@ -17,7 +17,7 @@ def test_parse_args_without_args():
 
 
 def test_parse_args_releases():
-    args = parse_args(['-r', 'pandas'])
+    args = parse_args(['-r', 'pip'])
     assert len(vars(args)) > 0
 
 
