@@ -93,12 +93,12 @@ def parse_args(args):
         help="Return the 10 most recent releases of the package"
     )
     parser.add_argument(
-        '-Rr',
-        '--rank-releases',
-        dest="rank_releases",
+        '-o',
+        '--order-releases',
+        dest="order_releases",
         nargs=3,
         help="return the rank by recent releases. \
-        The first argument is the time in days the function will count the amount of releases.\
+        The first argument is the time in days the function will count the amount of releases. \
         The second argument is the size of the list of packages the function will iterate, \
         to iterate all packages use -None- as input\
         The third argument is the amount of package of the rank the function will return, \
@@ -152,10 +152,10 @@ def main(args):
     elif args.info is not None:
         results = ind.package_info(pkgn=args.info[0])
         print("Name: {} \nDescription: {}".format(*results))
-    elif args.rank_releases is not None:
-        results = ind.rank_of_packages_by_recent_release(time_days = args.rank_releases[0],
-                                                         list_size = args.rank_releases[1],
-                                                         rank_size = args.rank_releases[2])
+    elif args.order_releases is not None:
+        results = ind.rank_of_packages_by_recent_release(time_days = args.order_releases[0],
+                                                         list_size = args.order_releases[1],
+                                                         rank_size = args.order_releases[2])
         for n, package in enumerate(results):
             print("{}\t{}".format(n+1, package))
     elif args.tree is not None:
