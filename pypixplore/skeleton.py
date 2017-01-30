@@ -93,13 +93,13 @@ def parse_args(args):
         help="Return the 10 most recent releases of the package"
     )
     parser.add_argument(
-<<<<<<< HEAD
         '-ggs',
         '--get_git_stats',
         nargs=2,
         dest="get_git_stats",
-        help="Get specified git stats. Arg 1 can be ['forks', 'watchers', 'stars']. Arg 2 is the package name"
-=======
+        help="Get specified git stats. Arg 1 can be ['forks', 'watchers', 'stars']. Arg 2 is the package name")
+
+    parser.add_argument(
         '-o',
         '--order-releases',
         dest="order_releases",
@@ -110,15 +110,11 @@ def parse_args(args):
         to iterate all packages use -None- as input\
         The third argument is the amount of package of the rank the function will return, \
         to get the full rank use -None- as input."
->>>>>>> ce10b743a6145b16c3db8aa537d7cb768580fe29
     )
     parser.add_argument(
         '-pg',
         '--python_graphics',
-<<<<<<< HEAD
         nargs=1,
-=======
->>>>>>> ce10b743a6145b16c3db8aa537d7cb768580fe29
         help="Return a graph with the numbers of packages that run on Python 2x.x and Python 3.x.x",
     )
 
