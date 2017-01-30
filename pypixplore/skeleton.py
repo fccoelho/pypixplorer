@@ -115,7 +115,7 @@ def parse_args(args):
     )
 
     parser.add_argument(
-        '-d',
+        '-D',
         '--dependencies',
         nargs=1,
         dest="pkg_dependencies",
