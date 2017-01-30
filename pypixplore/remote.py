@@ -89,6 +89,7 @@ class Index:
         :param time_days: The period of time that the function will use to count how many releases the package has.
         :return: The amount of releases a package received in the given period.
         """
+        time_days = int(time_days)
         json = self._get_JSON(package_name)
         if json == []:
             return 0
