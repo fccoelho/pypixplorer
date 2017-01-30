@@ -40,8 +40,8 @@ class Index:
         a = self._get_JSON(pkgn)
         name = a["info"]["name"]
         description = a["info"]["description"]
-        if len(description) > 500:
-            description = a["info"]["summary"]
+        if len(description) > 2000:
+            description = description[:2000] + " [...]"
         return name, description
 
     def _update_cache(self, data):
