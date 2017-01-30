@@ -93,6 +93,13 @@ def parse_args(args):
         help="Return the 10 most recent releases of the package"
     )
     parser.add_argument(
+        '-c',
+        '--count_releases',
+        nargs=2,
+        dest="count_releases",
+        help="The amount of releases a package received in the given period"
+    )
+    parser.add_argument(
         '-pg',
         '--python_graphics',
         help="Return a graph with the numbers of packages that run on Python 2x.x and Python 3.x.x",
@@ -137,6 +144,8 @@ def main(args):
         pprint(ind.get_latest_releases(package_name=args.releases[0]))
     elif args.downloads is not None:
         pprint(ind.get_downloads(package_name=args.downloads[0]))
+    elif args.count_releases is not None:
+        pprint(ind.count_releases(package_name=args.count_releases[0],time_days=args.count_releases[1]))
     elif args.info is not None:
         results = ind.package_info(pkgn=args.info[0])
         print("Name: {} \nDescription: {}".format(*results))
