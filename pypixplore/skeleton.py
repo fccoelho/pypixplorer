@@ -19,7 +19,6 @@ __license__ = 'GPL v3'
 _logger = logging.getLogger(__name__)
 
 
-
 def parse_args(args):
     """Parse command line parameters
 
@@ -35,14 +34,6 @@ def parse_args(args):
         '--version',
         action='version',
         version='pypixplore {ver}'.format(ver=__version__)
-    )
-    parser.add_argument(
-        '-s',
-        '--status',
-        dest="name",
-        nargs=1,
-        help="Show Status for a given package.",
-        type=str,
     )
     parser.add_argument(
         '-l',
@@ -110,15 +101,27 @@ def parse_args(args):
         help='Install upgradeable packages (defaults to all)'
     )
     parser.add_argument(
-        '-rs',
+        '-R',
         '--release_series',
         nargs=1,
         dest="release_series",
         help="Return the 10 most recent releases of the package"
     )
     parser.add_argument(
+        '-o',
+        '--order-releases',
+        dest="order_releases",
+        nargs=3,
+        help="return the rank by recent releases. \
+        The first argument is the time in days the function will count the amount of releases. \
+        The second argument is the size of the list of packages the function will iterate, \
+        to iterate all packages use -None- as input\
+        The third argument is the amount of package of the rank the function will return, \
+        to get the full rank use -None- as input."
+    )
+    parser.add_argument(
         '-pg',
-        '--python-graphics',
+        '--python_graphics',
         help="Return a graph with the numbers of packages that run on Python 2x.x and Python 3.x.x",
     )
 
@@ -129,7 +132,15 @@ def parse_args(args):
         dest="pkg_dependencies",
         help="Returns the direct dependencies of a given package and their versions",
     )
-    
+
+    parser.add_argument(
+        '-c',
+        '--count_releases',
+        nargs=2,
+        dest="count_releases",
+        help="The amount of releases a package received in the given period"
+    )
+
     return parser.parse_args(args)
 
 
@@ -161,6 +172,8 @@ def main(args):
         pprint(ind.get_latest_releases(package_name=args.releases[0]))
     elif args.downloads is not None:
         pprint(ind.get_downloads(package_name=args.downloads[0]))
+    elif args.count_releases is not None:
+        pprint(ind.count_releases(package_name=args.count_releases[0], time_days=args.count_releases[1]))
     elif args.info is not None:
         results = ind.package_info(pkgn=args.info[0])
         print("Name: {} \nDescription: {}".format(*results))
@@ -168,9 +181,15 @@ def main(args):
         pprint(ip.upgrade())
     elif args.upgradeable is not None:
         pprint(ip.upgradeable())
+    elif args.order_releases is not None:
+        results = ind.rank_of_packages_by_recent_release(time_days = args.order_releases[0],
+                                                         list_size = args.order_releases[1],
+                                                         rank_size = args.order_releases[2])
+        for n, package in enumerate(results):
+            print("{}\t{}".format(n+1, package))
     elif args.tree is not None:
         print('{}\n(note: only two levels shown)'.format(ip.dependency_graph(package_name=args.tree[0])))
-    elif args.python - graphics is not None:
+    elif args.python_graphics is not None:
         pprint(ind.how_many_packages_version_py())
     elif args.release_series is not None:
         pprint(ind.release_series(package_name=args.release_series[0]))
@@ -187,8 +206,6 @@ def main(args):
 
 
     _logger.info("Done")
-
-
 def run():
     """Entry point for console_scripts
     """
