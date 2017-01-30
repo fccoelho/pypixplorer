@@ -73,5 +73,13 @@ class Tests:
 
         assert index.get_len_request(requests.get('https://api.github.com/repos/fccoelhsdfo/pypixsddasfplorer/forks')) is None
 
+    def test_concurrent_downloads(self, index):
+        out = index.get_multiple_JSONs(['pandas', 'numpy', 'pip', 'sympy'])
+        assert isinstance(out, dict)
+        assert isinstance(out['pip'], dict)
 
-
+    def test_concurrent_downloads_big(self, index):
+        l = index.client.list_packages()
+        out = index.get_multiple_JSONs(l)
+        assert isinstance(out, dict)
+        assert isinstance(out['pip'], dict)
