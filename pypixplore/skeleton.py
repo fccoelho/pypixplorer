@@ -1,20 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""
-This is a skeleton file that can serve as a starting point for a Python
-console script. To run this script uncomment the following line in the
-entry_points section in setup.cfg:
 
-    console_scripts =
-     fibonacci = pypixplore.skeleton:run
-
-Then run `python setup.py install` which will install the command `ppxplore`
-inside your current environment.
-Besides console scripts, the header (i.e. until _logger...) of this file can
-also be used as template for Python modules.
-
-Note: This skeleton file can be safely removed if not needed!
-"""
 from __future__ import division, print_function, absolute_import
 
 import argparse
@@ -54,6 +40,7 @@ def parse_args(args):
         '-s',
         '--status',
         dest="name",
+        nargs=1,
         help="Show Status for a given package.",
         type=str,
     )
@@ -77,13 +64,19 @@ def parse_args(args):
         dest="info",
         help="Shows package info",
     )
-
     parser.add_argument(
-        '-p',
-        '--popularity',
+        '-t',
+        '--dependency-tree',
         nargs=1,
-        dest="popularity",
-        help="Return the popularity of a package as the number of recent downloads",
+        dest="tree",
+        help="Returns the dependencies of a given package in a tree graph (up to the 2nd level)",
+    )
+    parser.add_argument(
+        '-d',
+        '--downloads',
+        nargs=1,
+        dest="downloads",
+        help="Return a package number of recent downloads",
     )
     parser.add_argument(
         '-v',
@@ -91,8 +84,8 @@ def parse_args(args):
         dest="loglevel",
         help="set loglevel to INFO",
         action='store_const',
-        const=logging.INFO)
-
+        const=logging.INFO
+    )
     parser.add_argument(
         '-vv',
         '--very-verbose',
@@ -116,6 +109,27 @@ def parse_args(args):
         nargs='+',
         help='Install upgradeable packages (defaults to all)'
     )
+    parser.add_argument(
+        '-rs',
+        '--release_series',
+        nargs=1,
+        dest="release_series",
+        help="Return the 10 most recent releases of the package"
+    )
+    parser.add_argument(
+        '-pg',
+        '--python-graphics',
+        help="Return a graph with the numbers of packages that run on Python 2x.x and Python 3.x.x",
+    )
+
+    parser.add_argument(
+        '-D',
+        '--dependencies',
+        nargs=1,
+        dest="pkg_dependencies",
+        help="Returns the direct dependencies of a given package and their versions",
+    )
+    
     return parser.parse_args(args)
 
 
@@ -131,7 +145,7 @@ def setup_logging(loglevel):
 
 
 def main(args):
-    """Main entry point allowing external callreleasess
+    """Main entry point allowing external call releasess
 
     Args:
       args ([str]): command line parameter list
@@ -145,8 +159,8 @@ def main(args):
         pprint(ip.list_installed())
     elif args.releases is not None:
         pprint(ind.get_latest_releases(package_name=args.releases[0]))
-    elif args.popularity is not None:
-        pprint(ind.get_popularity(package_name=args.popularity[0]))
+    elif args.downloads is not None:
+        pprint(ind.get_downloads(package_name=args.downloads[0]))
     elif args.info is not None:
         results = ind.package_info(pkgn=args.info[0])
         print("Name: {} \nDescription: {}".format(*results))
@@ -154,6 +168,23 @@ def main(args):
         pprint(ip.upgrade())
     elif args.upgradeable is not None:
         pprint(ip.upgradeable())
+    elif args.tree is not None:
+        print('{}\n(note: only two levels shown)'.format(ip.dependency_graph(package_name=args.tree[0])))
+    elif args.python - graphics is not None:
+        pprint(ind.how_many_packages_version_py())
+    elif args.release_series is not None:
+        pprint(ind.release_series(package_name=args.release_series[0]))
+    elif args.pkg_dependencies is not None:
+        dep_dict = ip.get_dependencies(package_name=args.pkg_dependencies[0])
+        print("PACKAGE: {}\nINSTALLED VERSION: {}".format(str(args.pkg_dependencies[0]).upper(),
+                                                          str(dep_dict[args.pkg_dependencies[0]])))
+        print("\nDEPENDENCIES:")
+        row = "{:<20}" * 3
+        print(row.format("", "Installed Version", "Required Version"))
+        for dependency in dep_dict['dependencies']:
+            print(row.format(dependency, str(dep_dict['dependencies'][dependency]['installed_version']),
+                             str(dep_dict['dependencies'][dependency]['required_version'])))
+
 
     _logger.info("Done")
 
