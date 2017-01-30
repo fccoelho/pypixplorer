@@ -1,8 +1,5 @@
 import pip
-<<<<<<< HEAD
 
-=======
->>>>>>> 43c1ea3160516d66a0d0b419ceaab7c787a41329
 from pypixplore.remote import Index
 import subprocess
 import json
