@@ -35,15 +35,15 @@ def parse_args(args):
         '--version',
         action='version',
         version='pypixplore {ver}'.format(ver=__version__)
-    )
+        
     parser.add_argument(
         '-s',
         '--status',
-        dest="name",
+        dest="status",
         nargs=1,
-        help="Show Status for a given package.",
-        type=str,
+        help="Show Status for a given package."
     )
+
     parser.add_argument(
         '-l',
         '--list',
@@ -146,6 +146,8 @@ def main(args):
         pprint(ind.get_latest_releases(package_name=args.releases[0]))
     elif args.downloads is not None:
         pprint(ind.get_downloads(package_name=args.downloads[0]))
+    elif args.status is not None:
+        pprint(ip.package_status(package_name=args.status[0]))
     elif args.info is not None:
         results = ind.package_info(pkgn=args.info[0])
         print("Name: {} \nDescription: {}".format(*results))
