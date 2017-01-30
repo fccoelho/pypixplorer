@@ -19,7 +19,6 @@ __license__ = 'GPL v3'
 _logger = logging.getLogger(__name__)
 
 
-
 def parse_args(args):
     """Parse command line parameters
 
@@ -35,14 +34,6 @@ def parse_args(args):
         '--version',
         action='version',
         version='pypixplore {ver}'.format(ver=__version__)
-    )
-    parser.add_argument(
-        '-s',
-        '--status',
-        dest="name",
-        nargs=1,
-        help="Show Status for a given package.",
-        type=str,
     )
     parser.add_argument(
         '-l',
@@ -95,7 +86,7 @@ def parse_args(args):
         const=logging.DEBUG)
 
     parser.add_argument(
-        '-rs',
+        '-R',
         '--release_series',
         nargs=1,
         dest="release_series",
@@ -115,7 +106,7 @@ def parse_args(args):
     )
     parser.add_argument(
         '-pg',
-        '--python-graphics',
+        '--python_graphics',
         help="Return a graph with the numbers of packages that run on Python 2x.x and Python 3.x.x",
     )
 
@@ -169,7 +160,7 @@ def main(args):
             print("{}\t{}".format(n+1, package))
     elif args.tree is not None:
         print('{}\n(note: only two levels shown)'.format(ip.dependency_graph(package_name=args.tree[0])))
-    elif args.python - graphics is not None:
+    elif args.python_graphics is not None:
         pprint(ind.how_many_packages_version_py())
     elif args.release_series is not None:
         pprint(ind.release_series(package_name=args.release_series[0]))
