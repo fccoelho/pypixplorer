@@ -240,7 +240,7 @@ class Index:
 
         return self.get_len_request(request)
 
-    def how_many_packages_version_py(self, x):
+    def how_many_packages_version_py(self, n_sample):
         """
         print('This command can take a while, do you wish to continue? /n type Y or N')
         aux = input()
@@ -258,8 +258,8 @@ class Index:
         count3master = 0
 
         rd.shuffle(list_of_all_packages)
-        ranges = 5.
-        for i in tqdm(range(int(ranges))):
+        n_sample = 700
+        for i in tqdm(range(int(n_sample))):
             try:
                 package = self._get_JSON(list_of_all_packages[i])
                 if len(package) > 0:
@@ -280,15 +280,15 @@ class Index:
                 count3master = count3master + 1
 
 
-        count_final = [round((count2master / ranges) * 10),
-                       round((count3master / ranges) * 10)]
+        count_final = [round((count2master / n_sample) * 10),
+                       round((count3master / n_sample) * 10)]
 
         # count_final = {'Python 2.x.x': count2master/len(list_of_all_packages), 'Python 3.x.x': count3master/len(list_of_all_packages)}
         # plt.bar(range(len(count_final)), count_final.values(), align='center')
         # plt.xticks(range(len(count_final)), count_final.keys())
-        self.print_graphics(count_final[0], count_final[1])
+        self.print_graphics(count_final[0], count_final[1], n_sample)
 
-    def print_graphics(self, python2, python3):
+    def print_graphics(self, python2, python3, n_sample):
         count_python2 = ""
         count_python3 = ""
 
