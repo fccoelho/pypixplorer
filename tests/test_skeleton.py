@@ -34,7 +34,9 @@ def test_parse_args_downloads():
     args = parse_args(['-d progressbar2'])
     assert args.downloads is not None
 
-
+def test_parse_args_order_releases():
+    args = parse_args(['-o', '20', '20', '20'])
+    assert args.order_releases is not None
 
 def test_setup_logging():
     setup_logging(logging.DEBUG)

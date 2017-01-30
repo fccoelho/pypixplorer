@@ -91,6 +91,7 @@ class Index:
         :param time_days: The period of time that the function will use to count how many releases the package has.
         :return: The amount of releases a package received in the given period.
         """
+        time_days = int(time_days)
         json = self._get_JSON(package_name)
         if json == []:
             return 0
@@ -110,17 +111,21 @@ class Index:
                 break
         return count
 
-    def rank_of_packages_by_recent_release(self, time_days = 30, size = None):
+    def rank_of_packages_by_recent_release(self, time_days = 30, list_size = None, rank_size = None):
         """
-        This function gets all packages and rank them by amount of releases in a period of time.
+        This function gets the packages and rank them by amount of releases in a period of time.
         :param time_days: The period of time in days that de function count_releases will use.
-        :param size: If given a size, the function use the first -size- packages of the list_of_all_packages.
-        :return: The rank by recent release using the time in days and the size given.
+        :param list_size: If given a -list_size-, the function use the first -list_size- packages of the list_of_all_packages.
+        :param rank_size: If given a -rank_size-, the function will return the first -rank_size- of the rank.
+        :return: The rank by recent release using the time in days, the -list_size- and the -rank_size- given.
         """
+        if list_size < rank_size:
+            rank_size = list_size
         list_of_all_packages = self.client.list_packages()
-        results = [self.count_releases(i, time_days) for i in list_of_all_packages[0:size]]
+        results = [self.count_releases(i, time_days) for i in list_of_all_packages[0:list_size]]
         dictionary = dict(zip(list_of_all_packages, results))
         rank = sorted(dictionary, key=dictionary.get, reverse=True)
+        rank = rank[0:rank_size]
         return(rank)
 
     def get_len_request(self, request):
