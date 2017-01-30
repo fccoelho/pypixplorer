@@ -1,9 +1,9 @@
 import xmlrpc.client as xmlrpcclient
-import requests
 from tinydb import TinyDB, Query
 import datetime
 import time
 import json
+import requests
 
 
 class Index:
@@ -32,7 +32,7 @@ class Index:
             try:
                 data = ans.json()
                 self._update_cache(data)
-            except ValueError:
+            except (ValueError, requests.exceptions.ConnectionError):
                 data = []
         return data
 
@@ -50,7 +50,7 @@ class Index:
 
     # moved get_dependencies and dependency_graph to local.py, as they can't be obtained remotely
 
-    def get_popularity(self, package_name):
+    def get_downloads(self, package_name):
         """
         Gets number of downloads for a given package
         :param package_name: name of the package
@@ -83,6 +83,12 @@ class Index:
         raise NotImplementedError
 
     def count_releases(self, package_name, time_days):
+        """
+        This function count how many releases a package received in a period of time in days.
+        :param package_name: The name of the package.
+        :param time_days: The period of time that the function will use to count how many releases the package has.
+        :return: The amount of releases a package received in the given period.
+        """
         json = self._get_JSON(package_name)
         if json == []:
             return 0
@@ -103,35 +109,182 @@ class Index:
         return count
 
     def rank_of_packages_by_recent_release(self, time_days = 30, size = None):
+        """
+        This function gets all packages and rank them by amount of releases in a period of time.
+        :param time_days: The period of time in days that de function count_releases will use.
+        :param size: If given a size, the function use the first -size- packages of the list_of_all_packages.
+        :return: The rank by recent release using the time in days and the size given.
+        """
         list_of_all_packages = self.client.list_packages()
         results = [self.count_releases(i, time_days) for i in list_of_all_packages[0:size]]
         dictionary = dict(zip(list_of_all_packages, results))
         rank = sorted(dictionary, key=dictionary.get, reverse=True)
         return(rank)
 
-    def get_number_forks(self, package_name):
-        forks = requests.get('https://api.github.com/repos/fccoelho/{}/forks'.format(package_name))
-        if forks.ok:
-            forks.content
-            forks = forks.text
-            forks = json.loads(forks)
-            forks = len(forks)
-        return forks
+    def get_len_request(self, request):
 
-    def get_number_stars(self, package_name):
-        stars = requests.get('https://api.github.com/repos/fccoelho/{}/stargazers'.format(package_name))
-        if stars.ok:
-            stars.content
-            stars = stars.text
-            stars = json.loads(stars)  # json to dict
-            stars = len(stars)
-        return stars
+        if not isinstance(request, requests.models.Response):
+            print('Class expected as input. <requests.models.Response>')
+            raise AttributeError
 
-    def get_number_watchers(self, package_name):
-        watchers = requests.get('https://api.github.com/repos/fccoelho/{}/subscribers'.format(package_name))
-        if watchers.ok:
-            watchers.content
-            watchers = watchers.text
-            watchers = json.loads(watchers)  # json to dict
-            watchers = len(watchers)
-        return watchers
+        if request.ok:
+            count = len(json.loads(request.text))
+
+            if isinstance(count, int):
+                return count
+
+            else:
+                print('Not an int')
+                raise AttributeError
+        else:
+            print('Page could not be loaded. Error:')
+            print(request)
+            return None
+
+    def get_github_repo_by_name(self, hyperlink):
+
+        if not isinstance(hyperlink, str):
+            print('String expected as input')
+            raise AttributeError
+
+        *useless, user, repo = hyperlink.split('/')
+
+        return 'https://api.github.com/repos/{}/{}/'.format(user, repo)
+    """
+    def get_github_repo_by_search(self, name):
+
+        if not isinstance(name, str):
+            print('String expected as input')
+            raise AttributeError
+
+        request_api = requests.get('https://api.github.com/search/repositories?q={}'.format(name))
+
+        if request_api.ok:
+            request_api_json = json.load(request_api.text)
+
+            if request_api_json['total_count'] == 0:
+                print('\nPackage {} not found on GitHub\n'.format(name))
+                return None
+
+            else:
+                print('{} repositories were found on GitHub '
+                      'based on the package name'.format(request_api_json['total_count']))
+
+                print('Here are the first 5 results. Type 0 - 4 to choose the one that is the correct.'
+                      'Type 9 otherwise to quit.')
+                for i in range(5):
+                    print('\n[{}]\nName:{}\nLink:{}'.format(i,request_api_json['items'][i]['name'],
+                                                      request_api_json['items'][i]['url']))
+
+                num = input('Type number here: ')
+
+                if num == 9:
+                    return None
+
+                if num <= 4:
+                    return request_api_json['items'][num]['url']
+
+                else:
+                    print("Not allowed value")
+                    raise AttributeError
+        else:
+            print('Page could not be loaded. Error:')
+            print(request_api)
+            return None
+    """
+    def get_git_number(self, of='', package_name=''):
+
+        if of == '':
+            print('No information specified on "of:"')
+            raise AttributeError
+
+        if package_name == '':
+            print('No package specified')
+            raise AttributeError
+
+        json = self._get_JSON(package_name)
+
+        hyperlink = json["info"]['home_page']
+
+        name = json['info']['name']
+
+        if 'github' in hyperlink:
+            git_repo_api = self.get_github_repo_by_name(hyperlink)
+
+        else:
+            print('Package does not have a GitHub Repo as an official homepage.\n')
+            return None
+            # git_repo_api = self.get_github_repo_by_search(name)
+
+
+        # get info from github api
+        if of == 'forks':
+            request = requests.get(git_repo_api + 'forks')
+
+        elif of == 'stars':
+            request = requests.get(git_repo_api + 'stargazers')
+
+        elif of == 'watchers':
+            request = requests.get(git_repo_api + 'subscribers')
+
+        else:
+            print('{} is not a possible option for "of".\n If you think that it should be implemented, implement!')
+            raise AttributeError
+
+
+        return self.get_len_request(request)
+
+    def how_many_packages_version_py(self):
+        print('This command can take a while, do you wish to continue? /n type Y or N')
+        aux = input()
+        if aux == 'N':
+            return
+        elif aux != 'y':
+            print('Por favor, digite S para sim ou N para não')
+            self.how_many_packages_version_py()
+
+        list_of_all_packages = self.client.list_packages()
+
+        count2master = 0
+        count3master = 0
+
+        for package_name in list_of_all_packages:
+            package_classifiers = self._get_JSON(package_name)['info']['classifiers']
+
+            python2counter = 0
+            python3counter = 0
+
+            for version_control in package_classifiers:
+                if 'Python :: 2' in version_control & python2counter == 0:
+                    python2counter += 1
+                    count2master += 1
+                else:
+                    pass
+                if 'Python :: 3' in version_control & python3counter == 0:
+                    python3counter += 1
+                    count3master += 1
+                else:
+                    pass
+
+        count_final = [round((count2master / len(list_of_all_packages)) * 10),
+                       round((count3master / len(list_of_all_packages)) * 10)]
+
+        # count_final = {'Python 2.x.x': count2master/len(list_of_all_packages), 'Python 3.x.x': count3master/len(list_of_all_packages)}
+        # plt.bar(range(len(count_final)), count_final.values(), align='center')
+        # plt.xticks(range(len(count_final)), count_final.keys())
+        self.print_graphics(count_final[0], count_final[1])
+
+    def print_graphics(self, python2, python3):
+        count_python2 = ""
+        count_python3 = ""
+
+        for i in range(0, python2):
+            count_python2 = count_python2 + "*"
+        for i in range(0, python3):
+            count_python3 = count_python3 + "*"
+        print('\t\t\t |')
+        print('Python 2.x.x |{} {}%'.format(count_python2, python2 * 10))
+        print('\t\t\t |')
+        print('\t\t\t |')
+        print('Python 3.x.x |{} {}%'.format(count_python3, python3 * 10))
+        print('\t\t\t |')

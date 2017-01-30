@@ -1,5 +1,7 @@
-===========
-Quick Start
-===========
+.. _quickstart:
 
-PypiExplorer provides, upon installation, a command line interface
+==========
+Quickstart
+==========
+
+.. include:: ../README.rst
