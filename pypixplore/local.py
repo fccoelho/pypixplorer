@@ -32,26 +32,28 @@ class InstalledPackages:
         """
         Lists upgradeable packages, their latest version and python requirements
         :param args: optional, names of packages to check if upgradeable
-        :return: list of dictionaries, each of which contains the name of upgradeable package, latest version
+        :return: a dictionary which contains the name of upgradeable package, latest version
         and its python requirements
         """
         installed_packages = self.list_installed()
-        upgradeable_list = list()
+        version_installed_pckgs = {}
+        names_installed_pckgs = list()
         for package in installed_packages:
             package = str(package).split()
-            package_name = package[0]
-            installed_version = package[1]
-            package_json = Index()
-            package_json = package_json._get_JSON(package_name)
-            if package_json:
-                latest_version = package_json['info']['version']
-                python_requirement = package_json['info']['requires_python']
-                if installed_version != latest_version:
-                    if python_requirement == '':
-                        python_requirement = 'None'
-                    upgradeable_package = {'Name': package_name, 'Release': latest_version,
-                                           'Python Requirement': python_requirement}
-                    upgradeable_list.append(upgradeable_package)
+            version_installed_pckgs[package[0]] = package[1]
+            names_installed_pckgs.append(package[0])
+        index = Index()
+        JSON = index._get_JSON(names_installed_pckgs)
+        upgradeable_list = list()
+        for package in JSON::
+            latest_version = package['info']['version']
+            python_requirement = package['info']['requires_python']
+            if installed_version != version_installed_pckgs[package]:
+                if python_requirement == '':
+                    python_requirement = 'None'
+                upgradeable_package = {'Name': package, 'Release': latest_version,
+                                       'Python Requirement': python_requirement}
+                upgradeable_list.append(upgradeable_package)
         if upgradeable_list:
             if not args:
                 return upgradeable_list
@@ -60,7 +62,7 @@ class InstalledPackages:
                 for arg in args:
                     for item in upgradeable_list:
                         if arg == item['Name']:
-                            possible_upgrades.append(arg)
+                            possible_upgrades.append(item)
                             break
                 if not possible_upgrades:
                     print("None of the packages specified are upgradeable")
