@@ -43,7 +43,7 @@ class InstalledPackages:
             version_installed_pckgs[package[0]] = package[1]
             names_installed_pckgs.append(package[0])
         index = Index()
-        JSON = index._get_JSON(names_installed_pckgs)
+        JSON = index.get_multiple_JSONs(names_installed_pckgs)
         upgradeable_list = list()
         for package in JSON::
             latest_version = package['info']['version']
