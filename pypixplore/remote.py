@@ -54,7 +54,7 @@ class Index:
         output = {}
         with concurrent.futures.ThreadPoolExecutor(max_workers=150) as executor:
             # Start the load operations and mark each future with its URL
-            future_to_url = {executor.submit(self._get_JSON, (pkg_name, False)): pkg_name for pkg_name in pkg_list}
+            future_to_url = {executor.submit(self._get_JSON, pkg_name, False): pkg_name for pkg_name in pkg_list}
             for future in concurrent.futures.as_completed(future_to_url):
                 pkg_name = future_to_url[future]
                 try:
@@ -67,9 +67,11 @@ class Index:
 
     def package_info(self, pkgn):
         a = self._get_JSON(pkgn)
-        name = a["info"]['name']
-        description = a['info']['description']
-        return (name, description)
+        name = a["info"]["name"]
+        description = a["info"]["description"]
+        if len(description) > 500:
+            description = a["info"]["summary"]
+        return name, description
 
     def _update_cache(self, package_name, data):
         # self.cache.insert(data)
