@@ -5,7 +5,6 @@
 #pycld2
 #morfessor
 pip
-tinydb
 pipdeptree
 asciitree
 ratelimit

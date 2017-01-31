@@ -28,7 +28,7 @@ class Tests:
         assert isinstance(localpacks.sub_graph("pip"), dict)
 
     def test_package_status(self, localpacks):
-        assert isinstance(localpacks.package_status('numpy'), tuple)
+        assert isinstance(localpacks.package_status('pip'), tuple)
         assert localpacks.package_status('@ab') is None
 
     def test_show(self, localpacks):
