@@ -10,8 +10,6 @@ import pickle
 import dbm
 import os
 import random as rd
-import tqdm
-
 
 class Index:
     """
@@ -280,7 +278,7 @@ class Index:
 
         return self.get_len_request(request)
 
-    def how_many_packages_version_py(self, n_sample):
+    def how_many_packages_version_py(self):
         """
         print('This command can take a while, do you wish to continue? /n type Y or N')
         aux = input()
@@ -294,20 +292,19 @@ class Index:
 
         list_of_all_packages = self.client.list_packages()
 
+        rd.shuffle(list_of_all_packages)
+
+        n_sample = 700
+        all_packages = self.get_multiple_JSONs(list_of_all_packages[:n_sample])
+
         count2master = 0
         count3master = 0
+        for key, package in all_packages.items():
 
-        rd.shuffle(list_of_all_packages)
-        n_sample = 700
-        for i in tqdm(range(int(n_sample))):
-            try:
-                package = self._get_JSON(list_of_all_packages[i])
-                if len(package) > 0:
-                    package_classifiers = package['info']['classifiers']
-                else:
-                    continue
-            except:
-                print(self._get_JSON(list_of_all_packages[i]))
+            if len(package) > 0:
+                package_classifiers = package['info']['classifiers']
+            else:
+                continue
 
 
             pyt2 = ['Python :: 2' in version_control for version_control in package_classifiers]
@@ -323,9 +320,6 @@ class Index:
         count_final = [round((count2master / n_sample) * 10),
                        round((count3master / n_sample) * 10)]
 
-        # count_final = {'Python 2.x.x': count2master/len(list_of_all_packages), 'Python 3.x.x': count3master/len(list_of_all_packages)}
-        # plt.bar(range(len(count_final)), count_final.values(), align='center')
-        # plt.xticks(range(len(count_final)), count_final.keys())
         self.print_graphics(count_final[0], count_final[1], n_sample)
 
     def print_graphics(self, python2, python3, n_sample):
@@ -336,6 +330,7 @@ class Index:
             count_python2 = count_python2 + "*"
         for i in range(0, python3):
             count_python3 = count_python3 + "*"
+
         print('             |')
         print('Python 2.x.x |{} {}%'.format(count_python2, python2 * 10))
         print('             |')
