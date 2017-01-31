@@ -1,9 +1,4 @@
 # Add your requirements here like:
-# numpy
-# scipy>=0.9
-#polyglot
-#pycld2
-#morfessor
 pip
 tinydb
 pipdeptree

@@ -19,8 +19,12 @@ class Tests:
         assert len(index.cache) > 0
 
     def test_rank_of_packages_by_recent_release(self):
-        aa = Index().rank_of_packages_by_recent_release(list_size = 20, rank_size= 10)
-        assert len(aa) == 10
+        a = Index().rank_of_packages_by_recent_release(time_days = 150, list_size = 20, rank_size= 20)
+        assert len(a) == 20
+
+    def test_count_releases(self):
+        a = Index().count_releases('Py-Authorize', 150)
+        assert isinstance(a, int)
         
     def test_package_info(self):
         ind = Index()
