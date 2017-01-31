@@ -157,8 +157,6 @@ class Index:
         dictionary = dict(zip(list_of_all_packages, results))
         rank = sorted(dictionary, key=dictionary.get, reverse=True)
         rank = rank[0:rank_size]
-        print(dictionary)
-        print(rank)
         return(rank)
 
     def get_len_request(self, request):
