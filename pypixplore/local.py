@@ -43,12 +43,14 @@ class InstalledPackages:
             version_installed_pckgs[package[0]] = package[1]
             names_installed_pckgs.append(package[0])
         index = Index()
-        JSON = index.get_multiple_JSONs(names_installed_pckgs)
+        multiple_jsons = index.get_multiple_JSONs(names_installed_pckgs)
+        multiple_jsons = {json: multiple_jsons[json] for json in multiple_jsons if multiple_jsons[json]}
         upgradeable_list = list()
-        for package in JSON:
-            latest_version = package['info']['version']
-            python_requirement = package['info']['requires_python']
-            if installed_version != version_installed_pckgs[package]:
+        for package in multiple_jsons:
+            latest_version = multiple_jsons[package]['info']['version']
+            python_requirement = multiple_jsons[package]['info']['requires_python']
+            installed_version = version_installed_pckgs[package]
+            if installed_version != latest_version:
                 if python_requirement == '':
                     python_requirement = 'None'
                 upgradeable_package = {'Name': package, 'Release': latest_version,
@@ -76,7 +78,7 @@ class InstalledPackages:
         Downloads the latest version of upgradeable packages (all or specified)
         :param args: optional, names of packages to upgrade (if they are upgradeable)
         """
-        packages = self.upgradeable(args)
+        packages = self.upgradeable(*args)
         if packages is not None:
             package_names = list()
             for item in self.upgradeable():
