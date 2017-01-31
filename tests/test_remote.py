@@ -80,6 +80,6 @@ class Tests:
 
     def test_concurrent_downloads_100_pkgs(self, index):
         l = index.client.list_packages()
-        out = index.get_multiple_JSONs(l[100])
+        out = index.get_multiple_JSONs(l[:100])
         assert isinstance(out, dict)
-        assert isinstance(out[l[5]], dict)
+        assert isinstance(out.get(l[5]), dict)
