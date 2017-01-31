@@ -6,35 +6,44 @@ import json
 import requests
 import concurrent.futures
 from ratelimit import rate_limited
+import pickle
+import dbm
+import os
 
 
 class Index:
     """
     Connects with remote server. PyPI by default.
     """
-    def __init__(self, server='https://pypi.python.org/pypi', cache_path='pypiexplorer_cache.json'):
+
+    def __init__(self, server='https://pypi.python.org/pypi',
+                 cache_path=os.path.join(os.path.expanduser('~'), '.pypiexplorer_cache')):
         self.client = xmlrpcclient.ServerProxy(server)
         # self.cache = TinyDB(cache_path)
+        self.cache = dbm.open(cache_path, 'c')
 
     @rate_limited(10)
-    def _get_JSON(self, package_name):
+    def _get_JSON(self, package_name, update_cache=True):
         """
         Gets JSON record for a given package
         :param package_name: name of the package
         :return: dictionary
         """
-        # Package = Query()
-        results = []  # self.cache.search(Package.info.name == package_name)
+        Package = Query()
+        # results = self.cache.search(Package.info.name == package_name)
+
+        results = self.cache.get(package_name, None)
         # TODO: check if the package data has been updated since last time.
-        if results != []:
-            data = results[0]
+        if results is not None:
+            data = pickle.loads(results)
             # print("fetched from cache")
         else:
             url = 'http://pypi.python.org/pypi/{}/json'.format(package_name)
             ans = requests.get(url, timeout=15)
             try:
                 data = ans.json()
-                # self._update_cache(data)
+                if update_cache:
+                    self._update_cache(package_name, data)
             except (ValueError, requests.exceptions.ConnectionError):
                 data = []
         return data
@@ -43,7 +52,7 @@ class Index:
         output = {}
         with concurrent.futures.ThreadPoolExecutor(max_workers=150) as executor:
             # Start the load operations and mark each future with its URL
-            future_to_url = {executor.submit(self._get_JSON, pkg_name): pkg_name for pkg_name in pkg_list}
+            future_to_url = {executor.submit(self._get_JSON, (pkg_name, False)): pkg_name for pkg_name in pkg_list}
             for future in concurrent.futures.as_completed(future_to_url):
                 pkg_name = future_to_url[future]
                 try:
@@ -60,9 +69,9 @@ class Index:
         description = a['info']['description']
         return (name, description)
 
-    def _update_cache(self, data):
-        self.cache.insert(data)
-
+    def _update_cache(self, package_name, data):
+        # self.cache.insert(data)
+        self.cache[package_name] = pickle.dumps(data)
     def get_latest_releases(self, package_name):
         return self.client.package_releases(package_name)
 
