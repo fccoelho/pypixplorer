@@ -20,6 +20,10 @@ def test_parse_args_releases():
     args = parse_args(['-r', 'pip'])
     assert len(vars(args)) > 0
 
+def test_git_get_stats():
+    args = parse_args(['-ggs', 'forks', 'ARCCSSive'])
+    assert len(vars(args)) > 0
+
 
 def test_parse_args_list_packages():
     args = parse_args(['-l'])

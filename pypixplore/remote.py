@@ -9,7 +9,7 @@ from ratelimit import rate_limited
 import pickle
 import dbm
 import os
-
+import random as rd
 
 class Index:
     """
@@ -51,7 +51,7 @@ class Index:
         output = {}
         with concurrent.futures.ThreadPoolExecutor(max_workers=150) as executor:
             # Start the load operations and mark each future with its URL
-            future_to_url = {executor.submit(self._get_JSON, (pkg_name, False)): pkg_name for pkg_name in pkg_list}
+            future_to_url = {executor.submit(self._get_JSON, pkg_name, False): pkg_name for pkg_name in pkg_list}
             for future in concurrent.futures.as_completed(future_to_url):
                 pkg_name = future_to_url[future]
                 try:
@@ -122,8 +122,10 @@ class Index:
         if json == []:
             return 0
         keys = json["releases"].keys()
+        order_process = {i.replace('.', ''): i for i in keys }
+        keys_in_order = [order_process[i] for i in sorted(order_process.keys(), reverse=True)]
         count = 0
-        for key in keys:
+        for key in keys_in_order:
             if json["releases"][key] == []:
                 break
             date = json["releases"][key][0]["upload_time"]
@@ -225,7 +227,7 @@ class Index:
             print(request_api)
             return None
     """
-    def get_git_number(self, of='', package_name=''):
+    def get_git_stats(self, of='', package_name=''):
 
         if of == '':
             print('No information specified on "of:"')
@@ -236,6 +238,10 @@ class Index:
             raise AttributeError
 
         json = self._get_JSON(package_name)
+
+        if len(json) == 0:
+            print('Package not found')
+            raise AttributeError
 
         hyperlink = json["info"]['home_page']
 
@@ -268,46 +274,50 @@ class Index:
         return self.get_len_request(request)
 
     def how_many_packages_version_py(self):
+        """
         print('This command can take a while, do you wish to continue? /n type Y or N')
         aux = input()
+        aux = aux.capitalize()
         if aux == 'N':
-            return
-        elif aux != 'y':
+            return None
+        elif aux != 'Y':
             print('Por favor, digite S para sim ou N para não')
             self.how_many_packages_version_py()
+        """
 
         list_of_all_packages = self.client.list_packages()
 
+        rd.shuffle(list_of_all_packages)
+
+        n_sample = 700
+        all_packages = self.get_multiple_JSONs(list_of_all_packages[:n_sample])
+
         count2master = 0
         count3master = 0
+        for key, package in all_packages.items():
 
-        for package_name in list_of_all_packages:
-            package_classifiers = self._get_JSON(package_name)['info']['classifiers']
+            if len(package) > 0:
+                package_classifiers = package['info']['classifiers']
+            else:
+                continue
 
-            python2counter = 0
-            python3counter = 0
 
-            for version_control in package_classifiers:
-                if 'Python :: 2' in version_control & python2counter == 0:
-                    python2counter += 1
-                    count2master += 1
-                else:
-                    pass
-                if 'Python :: 3' in version_control & python3counter == 0:
-                    python3counter += 1
-                    count3master += 1
-                else:
-                    pass
+            pyt2 = ['Python :: 2' in version_control for version_control in package_classifiers]
+            pyt3 = ['Python :: 3' in version_control for version_control in package_classifiers]
 
-        count_final = [round((count2master / len(list_of_all_packages)) * 10),
-                       round((count3master / len(list_of_all_packages)) * 10)]
+            if True in pyt2:
+                count2master = count2master + 1
 
-        # count_final = {'Python 2.x.x': count2master/len(list_of_all_packages), 'Python 3.x.x': count3master/len(list_of_all_packages)}
-        # plt.bar(range(len(count_final)), count_final.values(), align='center')
-        # plt.xticks(range(len(count_final)), count_final.keys())
-        self.print_graphics(count_final[0], count_final[1])
+            if True in pyt3:
+                count3master = count3master + 1
 
-    def print_graphics(self, python2, python3):
+
+        count_final = [round((count2master / n_sample) * 10),
+                       round((count3master / n_sample) * 10)]
+
+        self.print_graphics(count_final[0], count_final[1], n_sample)
+
+    def print_graphics(self, python2, python3, n_sample):
         count_python2 = ""
         count_python3 = ""
 
@@ -315,9 +325,11 @@ class Index:
             count_python2 = count_python2 + "*"
         for i in range(0, python3):
             count_python3 = count_python3 + "*"
-        print('\t\t\t |')
+
+        print('             |')
         print('Python 2.x.x |{} {}%'.format(count_python2, python2 * 10))
-        print('\t\t\t |')
-        print('\t\t\t |')
+        print('             |')
+        print('             |')
         print('Python 3.x.x |{} {}%'.format(count_python3, python3 * 10))
-        print('\t\t\t |')
+        print('             |')
+        print('Sample error is 5% and condifence level of 99%')
