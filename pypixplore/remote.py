@@ -46,6 +46,8 @@ class Index:
                     self._update_cache(package_name, data)
             except (ValueError, requests.exceptions.ConnectionError):
                 data = []
+            except:
+                data = []
         return data
 
     def get_multiple_JSONs(self, pkg_list):
