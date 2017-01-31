@@ -4,39 +4,66 @@ import datetime
 import time
 import json
 import requests
-from tqdm import tqdm
+import concurrent.futures
+from ratelimit import rate_limited
+import pickle
+import dbm
+import os
 import random as rd
+import tqdm
 
 
 class Index:
     """
     Connects with remote server. PyPI by default.
     """
-    def __init__(self, server='https://pypi.python.org/pypi', cache_path='pypiexplorer_cache.json'):
-        self.client = xmlrpcclient.ServerProxy(server)
-        self.cache = TinyDB(cache_path)
 
-    def _get_JSON(self, package_name):
+    def __init__(self, server='https://pypi.python.org/pypi',
+                 cache_path=os.path.join(os.path.expanduser('~'), '.pypiexplorer_cache')):
+        self.client = xmlrpcclient.ServerProxy(server)
+        # self.cache = TinyDB(cache_path)
+        self.cache = dbm.open(cache_path, 'c')
+
+    @rate_limited(10)
+    def _get_JSON(self, package_name, update_cache=True):
         """
         Gets JSON record for a given package
         :param package_name: name of the package
         :return: dictionary
         """
         Package = Query()
-        results = self.cache.search(Package.info.name == package_name)
+        # results = self.cache.search(Package.info.name == package_name)
+
+        results = self.cache.get(package_name, None)
         # TODO: check if the package data has been updated since last time.
-        if results != []:
-            data = results[0]
+        if results is not None:
+            data = pickle.loads(results)
             # print("fetched from cache")
         else:
             url = 'http://pypi.python.org/pypi/{}/json'.format(package_name)
-            ans = requests.get(url)
+            ans = requests.get(url, timeout=15)
             try:
                 data = ans.json()
-                self._update_cache(data)
+                if update_cache:
+                    self._update_cache(package_name, data)
             except (ValueError, requests.exceptions.ConnectionError):
                 data = []
         return data
+
+    def get_multiple_JSONs(self, pkg_list):
+        output = {}
+        with concurrent.futures.ThreadPoolExecutor(max_workers=150) as executor:
+            # Start the load operations and mark each future with its URL
+            future_to_url = {executor.submit(self._get_JSON, (pkg_name, False)): pkg_name for pkg_name in pkg_list}
+            for future in concurrent.futures.as_completed(future_to_url):
+                pkg_name = future_to_url[future]
+                try:
+                    JSON = future.result()
+                    output[pkg_name] = JSON
+                except Exception as exc:
+                    print('%r generated an exception: %s' % (pkg_name, exc))
+        return output
+
 
     def package_info(self, pkgn):
         a = self._get_JSON(pkgn)
@@ -44,9 +71,9 @@ class Index:
         description = a['info']['description']
         return (name, description)
 
-    def _update_cache(self, data):
-        self.cache.insert(data)
-
+    def _update_cache(self, package_name, data):
+        # self.cache.insert(data)
+        self.cache[package_name] = pickle.dumps(data)
     def get_latest_releases(self, package_name):
         return self.client.package_releases(package_name)
 
