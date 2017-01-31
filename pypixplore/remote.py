@@ -65,9 +65,11 @@ class Index:
 
     def package_info(self, pkgn):
         a = self._get_JSON(pkgn)
-        name = a["info"]['name']
-        description = a['info']['description']
-        return (name, description)
+        name = a["info"]["name"]
+        description = a["info"]["description"]
+        if len(description) > 500:
+            description = a["info"]["summary"]
+        return name, description
 
     def _update_cache(self, package_name, data):
         # self.cache.insert(data)

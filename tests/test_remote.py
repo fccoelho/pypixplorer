@@ -9,7 +9,7 @@ class Tests:
         return Index()
 
     def test_get_json(self, index):
-        for package in ['pandas', 'numpy', 'tinydb']:
+        for package in ['pandas', 'morfessor', 'tinydb']:
             obj = index._get_JSON(package)
             assert isinstance(obj, dict)
             assert 'info' in obj
@@ -24,18 +24,20 @@ class Tests:
         
     def test_package_info(self):
         ind = Index()
-        result = ind.package_info("numpy")
+        result = ind.package_info("pip")
         assert isinstance(result, tuple)
+        assert isinstance(result[0], str)
+        assert isinstance(result[1], str)
 
 
     def test_releases(self, index):
-         for package_name in ['pandas', 'numpy', 'tinydb']:
+         for package_name in ['pip', 'asciitree', 'tinydb']:
              assert len(index.get_latest_releases(package_name)) > 0
 
 
     def test_get_popularity(self, index):
-        assert isinstance(index.get_downloads('numpy'), dict)
-        assert len(index.get_downloads('numpy')) > 0
+        assert isinstance(index.get_downloads('pip'), dict)
+        assert len(index.get_downloads('pip')) > 0
 
     def test_get_git_number(self, index):
         with pytest.raises(AttributeError):
@@ -46,13 +48,13 @@ class Tests:
 
         assert isinstance(index.get_git_number(of='forks', package_name='ARCCSSive'), int)
 
-        assert index.get_git_number(of='forks', package_name='pandas') is None
+        assert index.get_git_number(of='forks', package_name='pip') is None
 
     def test_release_series(self, index):
 
-        assert isinstance(index.release_series('numpy'), list)
+        assert isinstance(index.release_series('pip'), list)
 
-        assert len(index.release_series('numpy')) > 0
+        assert len(index.release_series('pip')) > 0
 
     def test_get_github_repo_by_name(self, index):
 
