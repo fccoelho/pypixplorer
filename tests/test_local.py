@@ -30,3 +30,7 @@ class Tests:
     def test_package_status(self, localpacks):
         assert isinstance(localpacks.package_status('numpy'), tuple)
         assert localpacks.package_status('@ab') is None
+
+    def test_show(self, localpacks):
+        assert localpacks.show('pip') == 0
+        assert localpacks.show('numkdkdpy') == 1

@@ -6,35 +6,46 @@ import json
 import requests
 import concurrent.futures
 from ratelimit import rate_limited
+import pickle
+import dbm
+import os
+import random as rd
+import tqdm
 
 
 class Index:
     """
     Connects with remote server. PyPI by default.
     """
-    def __init__(self, server='https://pypi.python.org/pypi', cache_path='pypiexplorer_cache.json'):
+
+    def __init__(self, server='https://pypi.python.org/pypi',
+                 cache_path=os.path.join(os.path.expanduser('~'), '.pypiexplorer_cache')):
         self.client = xmlrpcclient.ServerProxy(server)
         # self.cache = TinyDB(cache_path)
+        self.cache = dbm.open(cache_path, 'c')
 
     @rate_limited(10)
-    def _get_JSON(self, package_name):
+    def _get_JSON(self, package_name, update_cache=True):
         """
         Gets JSON record for a given package
         :param package_name: name of the package
         :return: dictionary
         """
-        # Package = Query()
-        results = []  # self.cache.search(Package.info.name == package_name)
+        Package = Query()
+        # results = self.cache.search(Package.info.name == package_name)
+
+        results = self.cache.get(package_name, None)
         # TODO: check if the package data has been updated since last time.
-        if results != []:
-            data = results[0]
+        if results is not None:
+            data = pickle.loads(results)
             # print("fetched from cache")
         else:
             url = 'http://pypi.python.org/pypi/{}/json'.format(package_name)
             ans = requests.get(url, timeout=15)
             try:
                 data = ans.json()
-                # self._update_cache(data)
+                if update_cache:
+                    self._update_cache(package_name, data)
             except (ValueError, requests.exceptions.ConnectionError):
                 data = []
         return data
@@ -43,7 +54,7 @@ class Index:
         output = {}
         with concurrent.futures.ThreadPoolExecutor(max_workers=150) as executor:
             # Start the load operations and mark each future with its URL
-            future_to_url = {executor.submit(self._get_JSON, pkg_name): pkg_name for pkg_name in pkg_list}
+            future_to_url = {executor.submit(self._get_JSON, pkg_name, False): pkg_name for pkg_name in pkg_list}
             for future in concurrent.futures.as_completed(future_to_url):
                 pkg_name = future_to_url[future]
                 try:
@@ -56,13 +67,15 @@ class Index:
 
     def package_info(self, pkgn):
         a = self._get_JSON(pkgn)
-        name = a["info"]['name']
-        description = a['info']['description']
-        return (name, description)
+        name = a["info"]["name"]
+        description = a["info"]["description"]
+        if len(description) > 500:
+            description = a["info"]["summary"]
+        return name, description
 
-    def _update_cache(self, data):
-        self.cache.insert(data)
-
+    def _update_cache(self, package_name, data):
+        # self.cache.insert(data)
+        self.cache[package_name] = pickle.dumps(data)
     def get_latest_releases(self, package_name):
         return self.client.package_releases(package_name)
 
@@ -219,7 +232,7 @@ class Index:
             print(request_api)
             return None
     """
-    def get_git_number(self, of='', package_name=''):
+    def get_git_stats(self, of='', package_name=''):
 
         if of == '':
             print('No information specified on "of:"')
@@ -230,6 +243,10 @@ class Index:
             raise AttributeError
 
         json = self._get_JSON(package_name)
+
+        if len(json) == 0:
+            print('Package not found')
+            raise AttributeError
 
         hyperlink = json["info"]['home_page']
 
@@ -261,47 +278,55 @@ class Index:
 
         return self.get_len_request(request)
 
-    def how_many_packages_version_py(self):
+    def how_many_packages_version_py(self, n_sample):
+        """
         print('This command can take a while, do you wish to continue? /n type Y or N')
         aux = input()
+        aux = aux.capitalize()
         if aux == 'N':
-            return
-        elif aux != 'y':
+            return None
+        elif aux != 'Y':
             print('Por favor, digite S para sim ou N para não')
             self.how_many_packages_version_py()
+        """
 
         list_of_all_packages = self.client.list_packages()
 
         count2master = 0
         count3master = 0
 
-        for package_name in list_of_all_packages:
-            package_classifiers = self._get_JSON(package_name)['info']['classifiers']
-
-            python2counter = 0
-            python3counter = 0
-
-            for version_control in package_classifiers:
-                if 'Python :: 2' in version_control & python2counter == 0:
-                    python2counter += 1
-                    count2master += 1
+        rd.shuffle(list_of_all_packages)
+        n_sample = 700
+        for i in tqdm(range(int(n_sample))):
+            try:
+                package = self._get_JSON(list_of_all_packages[i])
+                if len(package) > 0:
+                    package_classifiers = package['info']['classifiers']
                 else:
-                    pass
-                if 'Python :: 3' in version_control & python3counter == 0:
-                    python3counter += 1
-                    count3master += 1
-                else:
-                    pass
+                    continue
+            except:
+                print(self._get_JSON(list_of_all_packages[i]))
 
-        count_final = [round((count2master / len(list_of_all_packages)) * 10),
-                       round((count3master / len(list_of_all_packages)) * 10)]
+
+            pyt2 = ['Python :: 2' in version_control for version_control in package_classifiers]
+            pyt3 = ['Python :: 3' in version_control for version_control in package_classifiers]
+
+            if True in pyt2:
+                count2master = count2master + 1
+
+            if True in pyt3:
+                count3master = count3master + 1
+
+
+        count_final = [round((count2master / n_sample) * 10),
+                       round((count3master / n_sample) * 10)]
 
         # count_final = {'Python 2.x.x': count2master/len(list_of_all_packages), 'Python 3.x.x': count3master/len(list_of_all_packages)}
         # plt.bar(range(len(count_final)), count_final.values(), align='center')
         # plt.xticks(range(len(count_final)), count_final.keys())
-        self.print_graphics(count_final[0], count_final[1])
+        self.print_graphics(count_final[0], count_final[1], n_sample)
 
-    def print_graphics(self, python2, python3):
+    def print_graphics(self, python2, python3, n_sample):
         count_python2 = ""
         count_python3 = ""
 
@@ -309,9 +334,10 @@ class Index:
             count_python2 = count_python2 + "*"
         for i in range(0, python3):
             count_python3 = count_python3 + "*"
-        print('\t\t\t |')
+        print('             |')
         print('Python 2.x.x |{} {}%'.format(count_python2, python2 * 10))
-        print('\t\t\t |')
-        print('\t\t\t |')
+        print('             |')
+        print('             |')
         print('Python 3.x.x |{} {}%'.format(count_python3, python3 * 10))
-        print('\t\t\t |')
+        print('             |')
+        print('Sample error is 5% and condifence level of 99%')

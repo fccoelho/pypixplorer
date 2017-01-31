@@ -8,7 +8,6 @@ from asciitree import LeftAligned
 from asciitree.drawing import BoxStyle, BOX_DOUBLE
 
 
-
 class InstalledPackages:
     """
     Gets installed packages and their dependencies
@@ -24,8 +23,8 @@ class InstalledPackages:
         """
         return self.installed
 
-    def show(self, name=None):
-        raise NotImplementedError
+    def show(self, package_name):
+        return pip.main(['show', package_name])
 
     def upgradeable(self):
         raise NotImplementedError
@@ -49,19 +48,20 @@ class InstalledPackages:
         :param package_name: name of the package
         :return: a dictionary of dependencies and their versions
         """
+        package_name = package_name.lower()
         my_file = Path("pack_db.json")
         if not my_file.is_file():  # test if cache exists
             pack_db = self.make_dep_json()  # make cache
             Pack = Query()
-            list_version = pack_db.search(Pack.package.package_name == str(package_name))  # query cache for package
+            list_version = pack_db.search(Pack.package.key == str(package_name))  # query cache for package
         else:
             pack_db = TinyDB("pack_db.json")
             Pack = Query()
-            list_version = pack_db.search(Pack.package.package_name == str(package_name))
+            list_version = pack_db.search(Pack.package.key == str(package_name))
             if len(list_version) == 0:  # test if package is in cache
                 pack_db = self.make_dep_json()  # update cache because package may have been installed in the meantime
                 # Pack = Query() #no need
-                list_version = pack_db.search(Pack.package.package_name == str(package_name))
+                list_version = pack_db.search(Pack.package.key == str(package_name))
 
         if len(list_version) == 0:
             raise Exception("""package {} not installed! or are you requesting dependencies of a standard library
@@ -79,7 +79,8 @@ class InstalledPackages:
         deps_dict = {str(package_name): deps['package']['installed_version'], 'dependencies': {}}
         for dependency in deps['dependencies']:  # changing output to dict
             deps_dict['dependencies'][dependency['package_name']] = {'required_version': dependency['required_version'],
-                                                     'installed_version': dependency['installed_version']}
+                                                                     'installed_version': dependency[
+                                                                         'installed_version']}
 
         return deps_dict
 
@@ -96,9 +97,9 @@ class InstalledPackages:
 
     def dependency_graph(self, package_name):
         """
-        takes package_name and outputs its dependencies and their own dependencies plus an asciitree of this arrangement.
+        takes package_name and outputs its dependencies and their own dependencies plus an asciitree of this arrangement
         :param package_name:
-        :return: asciitree of the dependencies of the given package
+        :return: asciitree of the dependencies of the given package, up to the second level
         """
         sub_tr = {package_name: self.sub_graph(package_name)}
         tree = sub_tr
