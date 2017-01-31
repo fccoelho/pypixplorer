@@ -86,6 +86,21 @@ def parse_args(args):
         const=logging.DEBUG)
 
     parser.add_argument(
+        '-u',
+        '--upgradeable',
+        nargs='+',
+        dest = 'upgradeable',
+        help='Returns upgradeable packages (defaults to all)'
+    )
+
+    parser.add_argument(
+        '-uu',
+        '--upgrade upgradeable',
+        dest='upgrade',
+        nargs='+',
+        help='Install upgradeable packages (defaults to all)'
+    )
+    parser.add_argument(
         '-R',
         '--release_series',
         nargs=1,
@@ -184,6 +199,10 @@ def main(args):
     elif args.info is not None:
         results = ind.package_info(pkgn=args.info[0])
         print("Name: {} \nDescription: {}".format(*results))
+    elif args.upgrade is not None:
+        pprint(ip.upgrade())
+    elif args.upgradeable is not None:
+        pprint(ip.upgradeable())
     elif args.order_releases is not None:
         results = ind.rank_of_packages_by_recent_release(time_days = args.order_releases[0],
                                                          list_size = args.order_releases[1],
