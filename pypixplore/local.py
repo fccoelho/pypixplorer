@@ -45,7 +45,7 @@ class InstalledPackages:
         index = Index()
         JSON = index.get_multiple_JSONs(names_installed_pckgs)
         upgradeable_list = list()
-        for package in JSON::
+        for package in JSON:
             latest_version = package['info']['version']
             python_requirement = package['info']['requires_python']
             if installed_version != version_installed_pckgs[package]:
