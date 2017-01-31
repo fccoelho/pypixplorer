@@ -112,8 +112,10 @@ class Index:
         if json == []:
             return 0
         keys = json["releases"].keys()
+        order_process = {i.replace('.', ''): i for i in keys }
+        keys_in_order = [order_process[i] for i in sorted(order_process.keys(), reverse=True)]
         count = 0
-        for key in keys:
+        for key in keys_in_order:
             if json["releases"][key] == []:
                 break
             date = json["releases"][key][0]["upload_time"]
@@ -142,6 +144,8 @@ class Index:
         dictionary = dict(zip(list_of_all_packages, results))
         rank = sorted(dictionary, key=dictionary.get, reverse=True)
         rank = rank[0:rank_size]
+        print(dictionary)
+        print(rank)
         return(rank)
 
     def get_len_request(self, request):
