@@ -40,14 +40,17 @@ class Index:
             data = pickle.loads(results)
             # print("fetched from cache")
         else:
-            url = 'http://pypi.python.org/pypi/{}/json'.format(package_name)
-            ans = requests.get(url, timeout=15)
             try:
+                url = 'http://pypi.python.org/pypi/{}/json'.format(package_name)
+                ans = requests.get(url, timeout=15)
                 data = ans.json()
                 if update_cache:
                     self._update_cache(package_name, data)
             except (ValueError, requests.exceptions.ConnectionError):
                 data = []
+            except:
+                data = []
+
         return data
 
     def get_multiple_JSONs(self, pkg_list):
@@ -113,15 +116,14 @@ class Index:
         """
         raise NotImplementedError
 
-    def count_releases(self, package_name, time_days):
+    def count_releases(self, json, time_days):
         """
         This function count how many releases a package received in a period of time in days.
-        :param package_name: The name of the package.
+        :param json: The json of a package.
         :param time_days: The period of time that the function will use to count how many releases the package has.
         :return: The amount of releases a package received in the given period.
         """
         time_days = int(time_days)
-        json = self._get_JSON(package_name)
         if json == []:
             return 0
         keys = json["releases"].keys()
@@ -142,6 +144,7 @@ class Index:
                 break
         return count
 
+
     def rank_of_packages_by_recent_release(self, time_days = 30, list_size = None, rank_size = None):
         """
         This function gets the packages and rank them by amount of releases in a period of time.
@@ -152,12 +155,13 @@ class Index:
         """
         if list_size < rank_size:
             rank_size = list_size
-        list_of_all_packages = self.client.list_packages()
-        results = [self.count_releases(i, time_days) for i in list_of_all_packages[0:list_size]]
-        dictionary = dict(zip(list_of_all_packages, results))
+        list_of_packages = self.client.list_packages()[0:list_size]
+        dict_package_json = self.get_multiple_JSONs(list_of_packages)
+        dictionary = {i : self.count_releases(dict_package_json[i], time_days) for i in  list_of_packages}
         rank = sorted(dictionary, key=dictionary.get, reverse=True)
         rank = rank[0:rank_size]
         return(rank)
+
 
     def get_len_request(self, request):
 
