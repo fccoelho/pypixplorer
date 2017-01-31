@@ -10,7 +10,6 @@ import pickle
 import dbm
 import os
 import random as rd
-from tqdm import tqdm
 
 class Index:
     """
