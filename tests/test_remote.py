@@ -16,7 +16,7 @@ class Tests:
             assert 'name' in obj['info']
 
     def test_cache_update(self, index):
-        assert len(index.cache.all()) > 0
+        assert len(index.cache) > 0
 
     def test_rank_of_packages_by_recent_release(self):
         aa = Index().rank_of_packages_by_recent_release(list_size = 20, rank_size= 10)
@@ -75,5 +75,13 @@ class Tests:
 
         assert index.get_len_request(requests.get('https://api.github.com/repos/fccoelhsdfo/pypixsddasfplorer/forks')) is None
 
+    def test_concurrent_downloads(self, index):
+        out = index.get_multiple_JSONs(['pandas', 'numpy', 'pip', 'sympy'])
+        assert isinstance(out, dict)
+        assert isinstance(out['pip'], dict)
 
-
+    def test_concurrent_downloads_100_pkgs(self, index):
+        l = index.client.list_packages()
+        out = index.get_multiple_JSONs(l[:100])
+        assert isinstance(out, dict)
+        assert isinstance(out.get(l[5]), dict)
