@@ -52,7 +52,7 @@ class Index:
         output = {}
         with concurrent.futures.ThreadPoolExecutor(max_workers=150) as executor:
             # Start the load operations and mark each future with its URL
-            future_to_url = {executor.submit(self._get_JSON, (pkg_name, False)): pkg_name for pkg_name in pkg_list}
+            future_to_url = {executor.submit(self._get_JSON, pkg_name, False): pkg_name for pkg_name in pkg_list}
             for future in concurrent.futures.as_completed(future_to_url):
                 pkg_name = future_to_url[future]
                 try:
