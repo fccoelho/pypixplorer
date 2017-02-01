@@ -21,6 +21,7 @@ class Index:
         self.client = xmlrpcclient.ServerProxy(server)
         # self.cache = TinyDB(cache_path)
         self.cache = dbm.open(cache_path, 'c')
+        self.cache.reorganize()  # optimize the cache
 
     @rate_limited(10)
     def _get_JSON(self, package_name, update_cache=True):
