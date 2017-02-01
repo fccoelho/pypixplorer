@@ -152,9 +152,8 @@ class Index:
         :param rank_size: If given a -rank_size-, the function will return the first -rank_size- of the rank.
         :return: The rank by recent release using the time in days, the -list_size- and the -rank_size- given.
         """
-        if list_size < rank_size:
-            rank_size = list_size
-        list_of_packages = self.client.list_packages()[0:list_size]
+        list_of_packages = self.client.list_packages()
+        list_of_packages= list_of_packages[0:list_size]
         dict_package_json = self.get_multiple_JSONs(list_of_packages)
         dictionary = {i : self.count_releases(dict_package_json[i], time_days) for i in  list_of_packages}
         rank = sorted(dictionary, key=dictionary.get, reverse=True)
