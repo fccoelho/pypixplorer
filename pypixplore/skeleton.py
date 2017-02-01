@@ -106,7 +106,7 @@ def parse_args(args):
         nargs=3,
         help="return the rank by recent releases. \
         The first argument is the time in days the function will count the amount of releases. \
-        The second argument is the size of the list of packages the function will iterate, \
+        The second argument is the size of the list of random packages of PyPI the function will iterate, \
         to iterate all packages use -None- as input\
         The third argument is the amount of package of the rank the function will return, \
         to get the full rank use -None- as input."
@@ -185,6 +185,11 @@ def main(args):
         print("Name: {} \nDescription: {}".format(*results))
 
     elif args.order_releases is not None:
+        for i in range(len(args.order_releases)):
+            if not args.order_releases[i] == 'None':
+                args.order_releases[i] = int(args.order_releases[i])
+            else:
+                args.order_releases[i] = None
         results = ind.rank_of_packages_by_recent_release(time_days = args.order_releases[0],
                                                          list_size = args.order_releases[1],
                                                          rank_size = args.order_releases[2])
