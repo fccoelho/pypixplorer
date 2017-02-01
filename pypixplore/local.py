@@ -87,13 +87,13 @@ class InstalledPackages:
                 for arg in args:
                     if arg in package_names:
                         print('Upgrading package {}'.format(arg))
-                        pip.main(['install', arg])
+                        pip.main(['install', "--upgrade", arg])
                     else:
                         print('The package {} is not upgradeable'.format(arg))
             else:
                 for package in package_names:
                     print('Upgrading package {}'.format(package))
-                    pip.main(['install', package])
+                    pip.main(['install', "--upgrade", package])
 
 
     def make_dep_json(self):
