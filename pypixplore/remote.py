@@ -336,4 +336,4 @@ class Index:
         print('             |')
         print('Python 3.x.x |{} {}%'.format(count_python3, python3 * 10))
         print('             |')
-        print('Sample error is 5% and condifence level of 99%')
+        print('Sample error is 5% and confidence level of 99%')

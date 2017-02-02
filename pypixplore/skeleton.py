@@ -210,7 +210,7 @@ def main(args):
     elif args.tree is not None:
         print('{}\n(note: only two levels shown)'.format(ip.dependency_graph(package_name=args.tree[0])))
 
-    elif args.python_graphics:
+    elif args.python_versions:
         pprint(ind.how_many_packages_version_py())
 
     elif args.release_series is not None:
