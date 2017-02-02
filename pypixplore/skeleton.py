@@ -103,6 +103,7 @@ def parse_args(args):
         '-o',
         '--order-releases',
         dest="order_releases",
+        type=int,
         nargs=3,
         help="return the rank by recent releases. \
         The first argument is the time in days the function will count the amount of releases. \
@@ -185,11 +186,6 @@ def main(args):
         print("Name: {} \nDescription: {}".format(*results))
 
     elif args.order_releases is not None:
-        for i in range(len(args.order_releases)):
-            if not args.order_releases[i] == 'None':
-                args.order_releases[i] = int(args.order_releases[i])
-            else:
-                args.order_releases[i] = None
         results = ind.rank_of_packages_by_recent_release(time_days = args.order_releases[0],
                                                          list_size = args.order_releases[1],
                                                          rank_size = args.order_releases[2])
