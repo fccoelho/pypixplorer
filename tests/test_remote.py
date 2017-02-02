@@ -23,7 +23,7 @@ class Tests:
         assert len(a) == 20
 
     def test_count_releases(self):
-        a = Index().count_releases('Py-Authorize', 150)
+        a = Index().count_releases(Index()._get_JSON('Pandas'), 150)
         assert isinstance(a, int)
         
     def test_package_info(self):
