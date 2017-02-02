@@ -45,6 +45,7 @@ def parse_args(args):
         '-r',
         '--releases',
         nargs=1,
+        metavar="<package_name>",
         dest="releases",
         help="List package latest release",
     )
@@ -52,6 +53,7 @@ def parse_args(args):
         '-i',
         '--info',
         nargs=1,
+        metavar = "<package_name>",
         dest="info",
         help="Shows package info",
     )
@@ -59,6 +61,7 @@ def parse_args(args):
         '-t',
         '--dependency-tree',
         nargs=1,
+        metavar="<package_name>",
         dest="tree",
         help="Returns the dependencies of a given package in a tree graph (up to the 2nd level)",
     )
@@ -66,6 +69,7 @@ def parse_args(args):
         '-d',
         '--downloads',
         nargs=1,
+        metavar="<package_name>",
         dest="downloads",
         help="Return a package number of recent downloads",
     )
@@ -89,6 +93,7 @@ def parse_args(args):
         '-R',
         '--release_series',
         nargs=1,
+        metavar="<package_name>",
         dest="release_series",
         help="Return the 10 most recent releases of the package"
     )
@@ -97,6 +102,7 @@ def parse_args(args):
         '--get_git_stats',
         nargs=2,
         dest="get_git_stats",
+        metavar = ['<forks|watchers|stars>', '<package name>'],
         help="Get specified git stats. Arg 1 can be ['forks', 'watchers', 'stars']. Arg 2 is the package name")
 
     parser.add_argument(
@@ -104,16 +110,18 @@ def parse_args(args):
         '--order-releases',
         dest="order_releases",
         nargs=3,
-        help="return the rank by recent releases. \
-        The first argument is the time in days the function will count the amount of releases. \
-        The second argument is the size of the list of random packages of PyPI the function will iterate, \
-        to iterate all packages use -None- as input\
-        The third argument is the amount of package of the rank the function will return, \
-        to get the full rank use -None- as input."
+        metavar=["days", "#packages", "size"],
+        help="""return the rank by recent releases.
+        The first argument is the time in days the function will count the amount of releases.
+        The second argument is the size of the list of random packages of PyPI the function will iterate,
+        to iterate all packages use -None- as input
+        The third argument is the amount of package of the rank the function will return,
+        to get the full rank use -None- as input."""
     )
+
     parser.add_argument(
-        '-pg',
-        '--python_graphics',
+        '-pv',
+        '--python_versions',
         action='store_true',
         help="Return a graph with the numbers of packages that run on Python 2x.x and Python 3.x.x",
     )
@@ -122,6 +130,7 @@ def parse_args(args):
         '-D',
         '--dependencies',
         nargs=1,
+        metavar="<package_name>",
         dest="pkg_dependencies",
         help="Returns the direct dependencies of a given package and their versions",
     )
@@ -130,8 +139,9 @@ def parse_args(args):
         '-c',
         '--count_releases',
         nargs=2,
+        metavar=['<package_name>', '<period>'],
         dest="count_releases",
-        help="The amount of releases a package received in the given period"
+        help="The amount of releases a package received in the last <period> days"
     )
 
     return parser.parse_args(args)

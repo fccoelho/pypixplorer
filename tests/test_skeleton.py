@@ -15,9 +15,14 @@ def test_parse_args_without_args():
     assert isinstance(vars(args), dict)
     assert len(vars(args)) > 0
 
+def test_main():
+    args = parse_args(['-r', 'pip'])
+    assert main(args) is None
+
+
 
 def test_parse_args_releases():
-    args = parse_args(['-r', 'pip'])
+    args = parse_args(['-i', 'pip'])
     assert len(vars(args)) > 0
 
 def test_git_get_stats():
