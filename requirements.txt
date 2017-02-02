@@ -1,6 +1,5 @@
 # Add your requirements here like:
 pip
-tinydb
 pipdeptree
 asciitree
 ratelimit
