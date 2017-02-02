@@ -1,9 +1,6 @@
 import pip
 import subprocess
 import json
-from distutils.version import LooseVersion as lsvrs
-from tinydb import TinyDB, Query
-from pathlib import Path
 from asciitree import LeftAligned
 from asciitree.drawing import BoxStyle, BOX_DOUBLE
 
@@ -15,6 +12,7 @@ class InstalledPackages:
 
     def __init__(self):
         self.installed = pip.get_installed_distributions()
+        self.cache = 0
 
     def list_installed(self):
         """
@@ -35,12 +33,11 @@ class InstalledPackages:
         :return: a tinydb database
         """
         deptree = subprocess.getoutput('pipdeptree -j')  # run pipdeptree (python module) on the terminal: outputs json
-        pack_json = json.loads(deptree)  # load json to python environment
-
-        pack_db = TinyDB("pack_db.json")
-        pack_db.purge()  # the method clears the database on every call, avoiding rewrites of packages (duplicates)
-        pack_db.insert_multiple(pack_json)
-        return pack_db
+        deptree = json.loads(deptree)
+        pack_db = {}
+        for pack in deptree:
+            pack_db[str(pack['package']['key'])] = pack
+        self.cache = pack_db
 
     def get_dependencies(self, package_name):
         """
@@ -49,38 +46,26 @@ class InstalledPackages:
         :return: a dictionary of dependencies and their versions
         """
         package_name = package_name.lower()
-        my_file = Path("pack_db.json")
-        if not my_file.is_file():  # test if cache exists
-            pack_db = self.make_dep_json()  # make cache
-            Pack = Query()
-            list_version = pack_db.search(Pack.package.key == str(package_name))  # query cache for package
+        if self.cache is 0:  # test if cache exists
+            self.make_dep_json()  # make cache
+            pack_db = self.cache
+            pack = pack_db.get(package_name, None)
         else:
-            pack_db = TinyDB("pack_db.json")
-            Pack = Query()
-            list_version = pack_db.search(Pack.package.key == str(package_name))
-            if len(list_version) == 0:  # test if package is in cache
-                pack_db = self.make_dep_json()  # update cache because package may have been installed in the meantime
-                # Pack = Query() #no need
-                list_version = pack_db.search(Pack.package.key == str(package_name))
+            pack_db = self.cache
+            pack = pack_db.get(package_name, None)
+            if pack is None:  # test if package is in cache
+                self.make_dep_json()  # update cache because package may have been installed in the meantime
+                pack_db = self.cache
+                pack = pack_db.get(package_name, None)
 
-        if len(list_version) == 0:
+        if pack is None:
             raise Exception("""package {} not installed! or are you requesting dependencies of a standard library
             package? they don't have those!""".format(package_name))
-        elif len(list_version) == 1:
-            deps = list_version[0]
-        else:  # check which version is latest
-            max_idx, max_ver = 0, '0'
-            for idx, dic in enumerate(list_version):
-                version = dic["package"]["installed_version"]
-                if lsvrs(version) > lsvrs(max_ver):
-                    max_idx, max_ver = idx, version
-            deps = list_version[max_idx]
 
-        deps_dict = {str(package_name): deps['package']['installed_version'], 'dependencies': {}}
-        for dependency in deps['dependencies']:  # changing output to dict
-            deps_dict['dependencies'][dependency['package_name']] = {'required_version': dependency['required_version'],
-                                                                     'installed_version': dependency[
-                                                                         'installed_version']}
+        deps_dict = {str(package_name): pack['package']['installed_version'], 'dependencies': {}}
+        for dependency in pack['dependencies']:  # changing output to dict
+            deps_dict["dependencies"][dependency['key']] = {"required_version": dependency["required_version"],
+                                                            "installed_version": dependency["installed_version"]}
 
         return deps_dict
 
@@ -101,6 +86,7 @@ class InstalledPackages:
         :param package_name:
         :return: asciitree of the dependencies of the given package, up to the second level
         """
+        package_name = package_name.lower()
         sub_tr = {package_name: self.sub_graph(package_name)}
         tree = sub_tr
         for node in sub_tr[package_name]:

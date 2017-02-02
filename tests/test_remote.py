@@ -9,7 +9,7 @@ class Tests:
         return Index()
 
     def test_get_json(self, index):
-        for package in ['pandas', 'morfessor', 'tinydb']:
+        for package in ['pandas', 'pip', 'ratelimit']:
             obj = index._get_JSON(package)
             assert isinstance(obj, dict)
             assert 'info' in obj
@@ -35,7 +35,7 @@ class Tests:
 
 
     def test_releases(self, index):
-         for package_name in ['pip', 'asciitree', 'tinydb']:
+         for package_name in ['pip', 'asciitree', 'ratelimit']:
              assert len(index.get_latest_releases(package_name)) > 0
 
 
@@ -80,7 +80,7 @@ class Tests:
         assert index.get_len_request(requests.get('https://api.github.com/repos/fccoelhsdfo/pypixsddasfplorer/forks')) is None
 
     def test_concurrent_downloads(self, index):
-        out = index.get_multiple_JSONs(['pandas', 'numpy', 'pip', 'sympy'])
+        out = index.get_multiple_JSONs(['asciitree', 'ratelimit', 'pip', 'pipdeptree'])
         assert isinstance(out, dict)
         assert isinstance(out['pip'], dict)
 
