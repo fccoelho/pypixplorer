@@ -188,7 +188,8 @@ def main(args):
         print('{}\n(note: only two levels shown)'.format(ip.dependency_graph(package_name=args.tree[0])))
 
     elif args.count_releases is not None:
-        pprint(ind.count_releases(package_name=args.count_releases[0], time_days=args.count_releases[1]))
+        JSON = ind._get_JSON(args.count_releases[0])
+        pprint(ind.count_releases(json=JSON, time_days=args.count_releases[1]))
 
     elif args.info is not None:
         results = ind.package_info(pkgn=args.info[0])
