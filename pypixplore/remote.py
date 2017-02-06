@@ -234,6 +234,8 @@ class Index:
 
         count2master = 0
         count3master = 0
+        both = 0
+        unknown = 0
 
         for key, package in all_packages.items():
 
@@ -242,33 +244,30 @@ class Index:
             else:
                 continue
 
+            pyt2 = any(['Python :: 2' in version_control for version_control in package_classifiers])
+            pyt3 = any(['Python :: 3' in version_control for version_control in package_classifiers])
 
-            pyt2 = ['Python :: 2' in version_control for version_control in package_classifiers]
-            pyt3 = ['Python :: 3' in version_control for version_control in package_classifiers]
+            if pyt2 and pyt3:
+                both += 1
+            elif pyt2 and not pyt3:
+                count2master += 1
+            elif pyt3 and not pyt2:
+                count3master += 1
+            else:
+                unknown += 1
 
-            if True in pyt2:
-                count2master = count2master + 1
-
-            if True in pyt3:
-                count3master = count3master + 1
-
-
-        count_final = [round((count2master/n_sample), 2)*10, round((count3master/n_sample), 2)*10]
+        count_final = [round((both / n_sample), 2) * 100, round((count2master / n_sample), 2) * 100,
+                       round((count3master / n_sample), 2) * 100, round((unknown / n_sample), 2) * 100]
 
         return count_final
 
-    def print_graphics(self, python2, python3):
-        count_python2 = ""
-        count_python3 = ""
+    def print_graphics(self, results):
+        b, python2, python3, u = results
 
-        for i in range(0, round(python2)):
-            count_python2 = count_python2 + "*"
-        for i in range(0, round(python3)):
-            count_python3 = count_python3 + "*"
-
-        string_to_print = '''
-        Python 2.x.x|{} {}%
-        Python 3.x.x|{} {}%
-        '''.format(count_python2, python2*10, count_python3, python3*10)
+        string_to_print = 'Both 2.x and 3.x |{} {}%\nOnly Python 2.x.x|{} {}%\n' \
+                          'Only Python 3.x.x|{} {}%\nUnknown          |{} {}%'.format('*' * int(b), b,
+                                                                                      '*' * int(python2), python2,
+                                                                                      '*' * int(python3), python3,
+                                                                                      '*' * int(u), u)
 
         return string_to_print

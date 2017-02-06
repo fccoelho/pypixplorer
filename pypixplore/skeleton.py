@@ -208,7 +208,7 @@ def main(args):
 
     elif args.python_versions is not None:
         result = ind.how_many_packages_version_py(n_sample=args.python_versions[0])
-        pprint(ind.print_graphics(result[0], result[1]))
+        print(ind.print_graphics(result))
 
     elif args.release_series is not None:
         pprint(ind.release_series(package_name=args.release_series[0]))
