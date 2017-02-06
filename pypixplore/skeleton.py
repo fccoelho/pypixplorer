@@ -149,10 +149,9 @@ def parse_args(args):
     return parser.parse_args(args)
 
 
-
-
 def setup_logging(loglevel):
-    """Setup basic logging
+    """
+    Setup basic logging
 
     Args:
       loglevel (int): minimum loglevel for emitting messages

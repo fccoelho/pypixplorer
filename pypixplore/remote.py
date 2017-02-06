@@ -1,5 +1,4 @@
 import xmlrpc.client as xmlrpcclient
-# from tinydb import TinyDB, Query
 import datetime
 import time
 import json
@@ -18,7 +17,6 @@ class Index:
 
     def __init__(self, server='https://pypi.python.org/pypi', cache_path=os.path.join(os.path.expanduser('~'), '.pypiexplorer_cache')):
         self.client = xmlrpcclient.ServerProxy(server)
-        # self.cache = TinyDB(cache_path)
         self.cache = dbm.open(cache_path, 'c')
  #       self.cache.reorganize()  # optimize the cache
 
@@ -29,9 +27,6 @@ class Index:
         :param package_name: name of the package
         :return: dictionary
         """
-        # Package = Query()
-        # results = self.cache.search(Package.info.name == package_name)
-
         results = self.cache.get(package_name, None)
         # TODO: check if the package data has been updated since last time.
         if results is not None:
@@ -159,87 +154,29 @@ class Index:
         rank = rank[0:rank_size]
         return(rank)
 
+    def get_len_response(self, response):
 
-    def get_len_request(self, request):
+        if response.ok:
+            count = len(json.loads(response.text))
 
-        if not isinstance(request, requests.models.Response):
-            print('Class expected as input. <requests.models.Response>')
-            raise AttributeError
-
-        if request.ok:
-            count = len(json.loads(request.text))
-
-            if isinstance(count, int):
-                return count
-
-            else:
-                print('Not an int')
-                raise AttributeError
         else:
-            print('Page could not be loaded. Error:')
-            print(request)
-            return None
+            count = None
+
+        return count
 
     def get_github_repo_by_name(self, hyperlink):
-
-        if not isinstance(hyperlink, str):
-            print('String expected as input')
-            raise AttributeError
-
-
-
+        parts = hyperlink.split('/')
+        user = parts[-2]
+        repo = parts[-1]
         return 'https://api.github.com/repos/{}/{}/'.format(user, repo)
-    """
-    def get_github_repo_by_search(self, name):
 
-        if not isinstance(name, str):
-            print('String expected as input')
-            raise AttributeError
-
-        request_api = requests.get('https://api.github.com/search/repositories?q={}'.format(name))
-
-        if request_api.ok:
-            request_api_json = json.load(request_api.text)
-
-            if request_api_json['total_count'] == 0:
-                print('\nPackage {} not found on GitHub\n'.format(name))
-                return None
-
-            else:
-                print('{} repositories were found on GitHub '
-                      'based on the package name'.format(request_api_json['total_count']))
-
-                print('Here are the first 5 results. Type 0 - 4 to choose the one that is the correct.'
-                      'Type 9 otherwise to quit.')
-                for i in range(5):
-                    print('\n[{}]\nName:{}\nLink:{}'.format(i,request_api_json['items'][i]['name'],
-                                                      request_api_json['items'][i]['url']))
-
-                num = input('Type number here: ')
-
-                if num == 9:
-                    return None
-
-                if num <= 4:
-                    return request_api_json['items'][num]['url']
-
-                else:
-                    print("Not allowed value")
-                    raise AttributeError
-        else:
-            print('Page could not be loaded. Error:')
-            print(request_api)
-            return None
-    """
     def get_git_stats(self, of='', package_name=''):
 
         if of == '':
-            print('No information specified on "of:"')
-            raise AttributeError
+            raise AttributeError('No information specified on "of:"')
 
         if package_name == '':
-            print('No package specified')
-            raise AttributeError
+            raise AttributeError('No package specified')
 
         json = self._get_JSON(package_name)
 
@@ -262,20 +199,19 @@ class Index:
 
         # get info from github api
         if of == 'forks':
-            request = requests.get(git_repo_api + 'forks')
+            response = requests.get(git_repo_api + 'forks')
 
         elif of == 'stars':
-            request = requests.get(git_repo_api + 'stargazers')
+            response = requests.get(git_repo_api + 'stargazers')
 
         elif of == 'watchers':
-            request = requests.get(git_repo_api + 'subscribers')
+            response = requests.get(git_repo_api + 'subscribers')
 
         else:
             print('{} is not a possible option for "of".\n If you think that it should be implemented, implement!')
             raise AttributeError
 
-
-        return self.get_len_request(request)
+        return self.get_len_response(response)
 
     def how_many_packages_version_py(self, n_sample=700):
         """

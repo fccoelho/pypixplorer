@@ -74,10 +74,12 @@ class Tests:
         with pytest.raises(AttributeError):
             index.get_github_repo_by_name(7)
 
-        assert isinstance(index.get_len_request(requests.get('https://api.github.com/repos/fccoelho/pypixplorer/forks'))
-                          , int)
+        assert isinstance(
+            index.get_len_response(requests.get('https://api.github.com/repos/fccoelho/pypixplorer/forks'))
+            , int)
 
-        assert index.get_len_request(requests.get('https://api.github.com/repos/fccoelhsdfo/pypixsddasfplorer/forks')) is None
+        assert index.get_len_response(
+            requests.get('https://api.github.com/repos/fccoelhsdfo/pypixsddasfplorer/forks')) is None
 
     def test_concurrent_downloads(self, index):
         out = index.get_multiple_JSONs(['asciitree', 'ratelimit', 'pip', 'pipdeptree'])
