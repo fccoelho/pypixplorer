@@ -29,7 +29,7 @@ class Index:
         :param package_name: name of the package
         :return: dictionary
         """
-        Package = Query()
+        # Package = Query()
         # results = self.cache.search(Package.info.name == package_name)
 
         results = self.cache.get(package_name, None)
@@ -186,7 +186,7 @@ class Index:
             print('String expected as input')
             raise AttributeError
 
-        *useless, user, repo = hyperlink.split('/')
+
 
         return 'https://api.github.com/repos/{}/{}/'.format(user, repo)
     """
