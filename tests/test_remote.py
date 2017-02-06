@@ -89,3 +89,13 @@ class Tests:
         out = index.get_multiple_JSONs(l[:100])
         assert isinstance(out, dict)
         assert isinstance(out.get(l[5]), dict)
+
+    def test_print_graphics(self, index):
+        out = index.print_graphics(2, 3)
+        assert "**" in out and "***" in out
+
+    def test_how_many_packages_version_py(self, index):
+        out = index.how_many_packages_version_py(n_sample=150)
+        assert isinstance(out, list)
+        assert out[0] > 0
+        assert out[1] > 0
